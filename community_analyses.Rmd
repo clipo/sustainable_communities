@@ -3,6 +3,9 @@ title: "Sustainable Communities Metrics"
 output: html_notebook
 ---
 
+Analysis of the Sustainable Communities metrics data. 
+
+First, read in the raw data. In this case, we start with just the original values (and will produce z-scores here).
 
 ```{r}
 library(readr)
@@ -13,6 +16,8 @@ CommunityData <- read_csv(here("data/CommunityData-raw-2015.csv"))
 rownames(CommunityData)=CommunityData$ME
 #summary(CommunityData)
 ```
+
+Having read in the data, now set rownames so we can later do a cool plot of the values with labels.
 
 ```{r}
 mydata  <- CommunityData[,c(4:ncol(CommunityData))]
@@ -27,7 +32,7 @@ myDataClean = na.omit(mydata)
 #summary(myDataClean)
 ```
 
-First, let's scale the data - change the raw scores to z-scores.
+Now, let's scale the data - change the raw scores to z-scores.
 
 ```{r}
 ## z-scores
@@ -35,12 +40,16 @@ scaled_data<- as.matrix(scale(myDataClean, center = TRUE, scale = TRUE))
 #View(scaled_data)
 ```
 
-Now lets do a kmeans analysis and use the elbow method to see if there are optimal clusters.
+Now, we will do a kmeans analysis and use the elbow method to see if there are optimal clusters. Note we are starting with all the orginal data.
 
 ```{r}
 kmm = kmeans(scaled_data,3,nstart = 50,iter.max = 15)  
 kmm
+```
 
+The kmeans analysis will go through the 1 to 20 clusters.
+
+```{r}
 #Elbow Method for finding the optimal number of clusters
 set.seed(123)
 # Compute and plot wss for k = 2 to k = 20
@@ -56,7 +65,7 @@ plot(1:k.max, wss,
 
 ```
 
-Not sure if there is a clear number of clusters. Lets try using BIC
+Now we have a scree plot showing the number of clusters and the sum of squares. Not sure if there is a clear number of clusters. Lets try using BIC
 
 ```{r}
 library(mclust)
@@ -65,7 +74,7 @@ d_clust <- Mclust(as.matrix(scaled_data), G=1:15,
 d_clust$BIC
 plot(d_clust)
 ```
-Lets goe a different route and use NbClust to see if we can figure out how many clusters there might be.
+Let's go a different route and use NbClust to see if we can figure out how many clusters there might be.
 
 
 ```{r}
@@ -139,5 +148,13 @@ nb <- NbClust(pc_data, diss=NULL, distance = "euclidean",
               index = "all", alphaBeale = 0.1)
 hist(nb$Best.nc[1,], breaks = max(na.omit(nb$Best.nc[1,])))
 
+```
+
+Now some nice plots. Lets use 9 as the right # of clusters
+```{r}
+library(cluster)
+library(fpc)
+
+plotcluster(dat, clus$cluster)
 ```
 
