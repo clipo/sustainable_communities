@@ -150,11 +150,11 @@ hist(nb$Best.nc[1,], breaks = max(na.omit(nb$Best.nc[1,])))
 
 ```
 
-Now some nice plots. Lets use 9 as the right # of clusters
+Now some nice plots. Lets use 7 as the right # of clusters
 ```{r}
 library(cluster)
 library(fpc)
-
-plotcluster(dat, clus$cluster)
+clus <- kmeans(pc_data, centers=7)
+plotcluster(pc_data, clus$cluster)
 ```
 
