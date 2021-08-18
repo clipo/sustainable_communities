@@ -1,6 +1,8 @@
 ---
 title: "Sustainable Communities Metrics"
-output: html_notebook
+output:
+  pdf_document: default
+  html_notebook: default
 ---
 
 Analysis of the Sustainable Communities metrics data. 
@@ -155,6 +157,34 @@ Now some nice plots. Lets use 7 as the right # of clusters
 library(cluster)
 library(fpc)
 clus <- kmeans(pc_data, centers=7)
+clus
 plotcluster(pc_data, clus$cluster)
+
+clusplot(pc_data, clus$cluster, color=TRUE, shade=TRUE, 
+         labels=4, lines=0)
+```
+
+Some additional plots
+
+```{r}
+
+res.km <- kmeans(pc_data,7,nstart=25)
+
+library(factoextra)
+
+## repel is on
+fviz_cluster(res.km, data = pc_data,
+             geom = "text",
+             ellipse.type = "convex", 
+             ggtheme = theme_bw(), labelsize = 3,repel=TRUE
+             )
+
+# no repel
+fviz_cluster(res.km, data = pc_data,
+             geom = "text",
+             ellipse.type = "convex", 
+             ggtheme = theme_bw(), labelsize = 3,repel=TRUE
+             )
+
 ```
 
