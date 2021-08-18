@@ -1,0 +1,143 @@
+---
+title: "Sustainable Communities Metrics"
+output: html_notebook
+---
+
+
+```{r}
+library(readr)
+library(here)
+CommunityData <- read_csv(here("data/CommunityData-raw-2015.csv"))
+#View(CommunityData)
+#set the row names in the table
+rownames(CommunityData)=CommunityData$ME
+#summary(CommunityData)
+```
+
+```{r}
+mydata  <- CommunityData[,c(4:ncol(CommunityData))]
+#View(mydata)
+mydata = as.data.frame(unclass(mydata))
+rownames(mydata)=CommunityData$ME
+#summary(mydata)
+#dim(mydata)
+# We can now remove any records that have NAs
+myDataClean = na.omit(mydata)
+#dim(myDataClean)
+#summary(myDataClean)
+```
+
+First, let's scale the data - change the raw scores to z-scores.
+
+```{r}
+## z-scores
+scaled_data<- as.matrix(scale(myDataClean, center = TRUE, scale = TRUE))
+#View(scaled_data)
+```
+
+Now lets do a kmeans analysis and use the elbow method to see if there are optimal clusters.
+
+```{r}
+kmm = kmeans(scaled_data,3,nstart = 50,iter.max = 15)  
+kmm
+
+#Elbow Method for finding the optimal number of clusters
+set.seed(123)
+# Compute and plot wss for k = 2 to k = 20
+k.max <- 20
+data <- scaled_data
+wss <- sapply(1:k.max, 
+              function(k){kmeans(data, k, nstart=50,iter.max = 15 )$tot.withinss})
+wss
+plot(1:k.max, wss,
+     type="b", pch = 19, frame = FALSE, 
+     xlab="Number of clusters K",
+     ylab="Total within-clusters sum of squares")
+
+```
+
+Not sure if there is a clear number of clusters. Lets try using BIC
+
+```{r}
+library(mclust)
+d_clust <- Mclust(as.matrix(scaled_data), G=1:15, 
+                  modelNames = mclust.options("emModelNames"))
+d_clust$BIC
+plot(d_clust)
+```
+Lets goe a different route and use NbClust to see if we can figure out how many clusters there might be.
+
+
+```{r}
+library(NbClust)
+nb <- NbClust(scaled_data, diss=NULL, distance = "euclidean", 
+              min.nc=2, max.nc=15, method = "kmeans", 
+              index = "all", alphaBeale = 0.1)
+hist(nb$Best.nc[1,], breaks = max(na.omit(nb$Best.nc[1,])))
+```
+
+Okay. Until now we have been using the raw data and all of the columns (though converted to z-scores). To see if we get any clarity we can reduce the dimensionality to by doing a PCA and then choosing a smaller number of dimensions to plat the variability.
+
+This does the PCA.
+
+```{r}
+# Proceed with principal components
+pc <- princomp(scaled_data)
+plot(pc)
+plot(pc, type='l')
+
+```
+Hmmm... 9t seems like 5 components explain a majority of the variance so let's start with 5
+```{r}
+
+pc_data = pc$scores[,c(1:5)]
+
+```
+Now let's do a cluster analysis based on these data. We will first use a k-means.
+
+The k-means model is “almost” a Gaussian mixture model and one can construct a likelihood for the Gaussian mixture model and thus also determine information criterion values.
+We install the mclust package and we will use the Mclust method of it. Determine the optimal model and number of clusters according to the Bayesian Information Criterion for expectation-maximization, initialized by hierarchical clustering for parameterized Gaussian mixture models. In this method we had set the modelNames parameter to mclust.options(“emModelNames”) so that it includes only those models for evaluation where the number of observation is greater than the dimensions of the dataset.
+
+```{r}
+
+kmm = kmeans(pc_data,3,nstart = 50,iter.max = 15)  
+kmm
+
+#Elbow Method for finding the optimal number of clusters
+set.seed(123)
+# Compute and plot wss for k = 2 to k = 20
+k.max <- 20
+data <- pc_data
+wss <- sapply(1:k.max, 
+              function(k){kmeans(data, k, nstart=50,iter.max = 15 )$tot.withinss})
+wss
+plot(1:k.max, wss,
+     type="b", pch = 19, frame = FALSE, 
+     xlab="Number of clusters K",
+     ylab="Total within-clusters sum of squares")
+```
+Therefore for k>5 the between_ss/total_ss ratio tends to change slowly and remain less changing as compared to other k’s. So how do we decide what will be the optimal choice. So we look at the second approach which comes with a new package.
+
+We can now use BIC to also evaluate the number of clusters
+```{r}
+library(mclust)
+d_clust <- Mclust(as.matrix(pc_data), G=1:15, 
+                  modelNames = mclust.options("emModelNames"))
+d_clust$BIC
+plot(d_clust)
+```   
+
+Based on these analysis, the number of clusters is either 7 (VEI, VEE) or 9 (VEI) - they are close to each other.
+
+NbClust package provides 30 indices for determining the number of clusters and proposes to user the best clustering scheme from the different results obtained by varying all combinations of number of clusters, distance measures, and clustering methods. Let's try that.
+
+```{r}
+
+library(NbClust)
+nb <- NbClust(pc_data, diss=NULL, distance = "euclidean", 
+              min.nc=2, max.nc=15, method = "kmeans", 
+              index = "all", alphaBeale = 0.1)
+hist(nb$Best.nc[1,], breaks = max(na.omit(nb$Best.nc[1,])))
+
+```
+
