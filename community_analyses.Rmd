@@ -45,8 +45,8 @@ scaled_data<- as.matrix(scale(myDataClean, center = TRUE, scale = TRUE))
 Now, we will do a kmeans analysis and use the elbow method to see if there are optimal clusters. Note we are starting with all the orginal data.
 
 ```{r}
-kmm = kmeans(scaled_data,3,nstart = 50,iter.max = 15)  
-kmm
+kmm = kmeans(scaled_data,11,nstart = 50,iter.max = 15)  
+#kmm
 ```
 
 The kmeans analysis will go through the 1 to 20 clusters.
@@ -82,7 +82,7 @@ Let's go a different route and use NbClust to see if we can figure out how many 
 ```{r}
 library(NbClust)
 nb <- NbClust(scaled_data, diss=NULL, distance = "euclidean", 
-              min.nc=2, max.nc=15, method = "kmeans", 
+              min.nc=2, max.nc=13, method = "kmeans", 
               index = "all", alphaBeale = 0.1)
 hist(nb$Best.nc[1,], breaks = max(na.omit(nb$Best.nc[1,])))
 ```
@@ -186,5 +186,14 @@ fviz_cluster(res.km, data = pc_data,
              ggtheme = theme_bw(), labelsize = 3,repel=TRUE
              )
 
+```
+Okay. Let's try TwoStep cluster analysis - using prcr
+```{r}
+library(prcr)
+clust<-create_profiles_cluster(pc_data, Comp.1,Comp.2, Comp.3, Comp.4, Comp.5,  n_profiles = 7, to_scale = TRUE)
+plot_profiles(clust, to_center = TRUE)
+
+clust<-create_profiles_cluster(scaled_data, AQI_Good,Bachelor_Over_25,Per_Poverty,Gini,non_migration,Per_Sev_Hous,  n_profiles = 7, to_scale = TRUE)
+plot_profiles(clust, to_center = TRUE)
 ```
 
