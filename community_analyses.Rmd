@@ -86,10 +86,31 @@ nb <- NbClust(scaled_data, diss=NULL, distance = "euclidean",
               index = "all", alphaBeale = 0.1)
 hist(nb$Best.nc[1,], breaks = max(na.omit(nb$Best.nc[1,])))
 ```
+Let's make some plots of the clusters. We will pick 9 as the number of clusters to examine based on the analysis above
+
+```{r}
+res.km <- kmeans(pc_data,9,nstart=25)
+
+library(factoextra)
+
+## repel is on
+fviz_cluster(res.km, data = pc_data,
+             geom = "text",
+             ellipse.type = "convex", 
+             ggtheme = theme_bw(), labelsize = 3,repel=TRUE
+             )
+
+# no repel
+fviz_cluster(res.km, data = pc_data,
+             geom = "text",
+             ellipse.type = "convex", 
+             ggtheme = theme_bw(), labelsize = 3,repel=TRUE
+             )
+```
 
 Okay. Until now we have been using the raw data and all of the columns (though converted to z-scores). To see if we get any clarity we can reduce the dimensionality to by doing a PCA and then choosing a smaller number of dimensions to plat the variability.
 
-This does the PCA.
+This next code does the PCA.
 
 ```{r}
 # Proceed with principal components
