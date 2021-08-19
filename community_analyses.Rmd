@@ -104,7 +104,7 @@ fviz_cluster(res.km, data = scaled_data,
 fviz_cluster(res.km, data = scaled_data,
              geom = "text",
              ellipse.type = "convex", 
-             ggtheme = theme_bw(), labelsize = 3,repel=TRUE
+             ggtheme = theme_bw(), labelsize = 3,repel=FALSE
              )
 ```
 
@@ -203,7 +203,7 @@ fviz_cluster(res.km, data = pc_data,
 fviz_cluster(res.km, data = pc_data,
              geom = "text",
              ellipse.type = "convex", 
-             ggtheme = theme_bw(), labelsize = 3,repel=TRUE
+             ggtheme = theme_bw(), labelsize = 3,repel=FALSE
              )
 
 ```
