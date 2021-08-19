@@ -3,6 +3,7 @@ title: "Sustainable Communities Metrics"
 output:
   pdf_document: default
   html_notebook: default
+  word_document: default
 ---
 
 Analysis of the Sustainable Communities metrics data. 
@@ -70,11 +71,10 @@ plot(1:k.max, wss,
 Now we have a scree plot showing the number of clusters and the sum of squares. Not sure if there is a clear number of clusters. Lets try using BIC
 
 ```{r}
-library(mclust)
-d_clust <- Mclust(as.matrix(scaled_data), G=1:15, 
-                  modelNames = mclust.options("emModelNames"))
-d_clust$BIC
-plot(d_clust)
+#library(mclust)
+#d_clust <- Mclust(as.matrix(scaled_data), G=1:15, modelNames = mclust.options("emModelNames"))
+#d_clust$BIC
+#plot(d_clust)
 ```
 Let's go a different route and use NbClust to see if we can figure out how many clusters there might be.
 
@@ -89,19 +89,19 @@ hist(nb$Best.nc[1,], breaks = max(na.omit(nb$Best.nc[1,])))
 Let's make some plots of the clusters. We will pick 9 as the number of clusters to examine based on the analysis above
 
 ```{r}
-res.km <- kmeans(pc_data,9,nstart=25)
+res.km <- kmeans(scaled_data,9,nstart=25)
 
 library(factoextra)
 
 ## repel is on
-fviz_cluster(res.km, data = pc_data,
+fviz_cluster(res.km, data = scaled_data,
              geom = "text",
              ellipse.type = "convex", 
              ggtheme = theme_bw(), labelsize = 3,repel=TRUE
              )
 
 # no repel
-fviz_cluster(res.km, data = pc_data,
+fviz_cluster(res.km, data = scaled_data,
              geom = "text",
              ellipse.type = "convex", 
              ggtheme = theme_bw(), labelsize = 3,repel=TRUE
@@ -152,11 +152,11 @@ Therefore for k>5 the between_ss/total_ss ratio tends to change slowly and remai
 
 We can now use BIC to also evaluate the number of clusters
 ```{r}
-library(mclust)
-d_clust <- Mclust(as.matrix(pc_data), G=1:15, 
-                  modelNames = mclust.options("emModelNames"))
-d_clust$BIC
-plot(d_clust)
+#library(mclust)
+#d_clust <- Mclust(as.matrix(pc_data), G=1:15, 
+ #                 modelNames = mclust.options("emModelNames"))
+#d_clust$BIC
+#plot(d_clust)
 ```   
 
 Based on these analysis, the number of clusters is either 7 (VEI, VEE) or 9 (VEI) - they are close to each other.
