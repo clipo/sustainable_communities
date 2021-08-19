@@ -6,11 +6,11 @@ output:
   word_document: default
 ---
 
-Analysis of the Sustainable Communities metrics data. 
+#Analysis of the Sustainable Communities metrics data. 
 
-First, read in the raw data. In this case, we start with just the original values (and will produce z-scores here).
+First, we read in the raw data. In this case, we start with just the original raw values. This is a simplifed version of the XLSX file that only includes those columns. We will produce z-scores here. Note that the data live in the "data" subdirectory. 
 
-```{r}
+```{r setup}
 library(readr)
 library(here)
 CommunityData <- read_csv(here("data/CommunityData-raw-2015.csv"))
@@ -20,7 +20,7 @@ rownames(CommunityData)=CommunityData$ME
 #summary(CommunityData)
 ```
 
-Having read in the data, now set rownames so we can later do a cool plot of the values with labels.
+Having read in the data, now set rownames so we can later do a cool plot of the values with labels. Note that at this point it make sense to omit the data with missing values (NA). We can do fancier stuff later to see what happens if we estimate those. 
 
 ```{r}
 mydata  <- CommunityData[,c(4:ncol(CommunityData))]
@@ -35,7 +35,7 @@ myDataClean = na.omit(mydata)
 #summary(myDataClean)
 ```
 
-Now, let's scale the data - change the raw scores to z-scores.
+Now, let's scale the data so that the variance in the columns is comparable (assuming we want to treat each dimension as equivalent).  Here, we change the raw scores to z-scores.
 
 ```{r}
 ## z-scores
@@ -68,15 +68,15 @@ plot(1:k.max, wss,
 
 ```
 
-Now we have a scree plot showing the number of clusters and the sum of squares. Not sure if there is a clear number of clusters. Lets try using BIC
+Now we have a scree plot showing the number of clusters and the sum of squares. Hmmm. It is not clear if there is a clear number of clusters. We can try using BIC to see if there is an optimal group of clusters. This uses the mclust package. 
 
 ```{r}
-#library(mclust)
-#d_clust <- Mclust(as.matrix(scaled_data), G=1:15, modelNames = mclust.options("emModelNames"))
-#d_clust$BIC
-#plot(d_clust)
+library(mclust)
+d_clust <- Mclust(as.matrix(scaled_data), G=1:15, modelNames = mclust.options("emModelNames"))
+d_clust$BIC
+plot(d_clust)
 ```
-Let's go a different route and use NbClust to see if we can figure out how many clusters there might be.
+We can also go adifferent route and use NbClust to see if we can figure out how many clusters there might be.
 
 
 ```{r}
@@ -133,7 +133,7 @@ We install the mclust package and we will use the Mclust method of it. Determine
 ```{r}
 
 kmm = kmeans(pc_data,3,nstart = 50,iter.max = 15)  
-kmm
+#kmm
 
 #Elbow Method for finding the optimal number of clusters
 set.seed(123)
@@ -152,11 +152,10 @@ Therefore for k>5 the between_ss/total_ss ratio tends to change slowly and remai
 
 We can now use BIC to also evaluate the number of clusters
 ```{r}
-#library(mclust)
-#d_clust <- Mclust(as.matrix(pc_data), G=1:15, 
- #                 modelNames = mclust.options("emModelNames"))
-#d_clust$BIC
-#plot(d_clust)
+library(mclust)
+d_clust <- Mclust(as.matrix(pc_data), G=1:15, modelNames = mclust.options("emModelNames"))
+d_clust$BIC
+plot(d_clust)
 ```   
 
 Based on these analysis, the number of clusters is either 7 (VEI, VEE) or 9 (VEI) - they are close to each other.
@@ -178,7 +177,7 @@ Now some nice plots. Lets use 7 as the right # of clusters
 library(cluster)
 library(fpc)
 clus <- kmeans(pc_data, centers=7)
-clus
+#clus
 plotcluster(pc_data, clus$cluster)
 
 clusplot(pc_data, clus$cluster, color=TRUE, shade=TRUE, 
