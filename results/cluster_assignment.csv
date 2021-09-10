@@ -1,0 +1,876 @@
+"","x"
+"Barre, VT",1
+"Farmington, NM",1
+"Fort Dodge, IA",1
+"Menomonie, WI",1
+"Lewisburg, TN",1
+"Riverton, WY",1
+"Rock Springs, WY",1
+"El Dorado, AR",1
+"York-Hanover, PA",1
+"Faribault-Northfield, MN",2
+"Lake Charles, LA",1
+"Snyder, TX",3
+"Woodward, OK",3
+"Washington, IN",1
+"Jamestown-Dunkirk-Fredonia, NY",1
+"Andrews, TX",3
+"Lawrenceburg, TN",1
+"Hastings, NE",2
+"McAllen-Edinburg-Mission, TX",1
+"Baton Rouge, LA",3
+"Pittsburg, KS",4
+"Midland, TX",3
+"Marinette, WI-MI",1
+"McPherson, KS",2
+"Abilene, TX",3
+"Atchison, KS",2
+"Laurel, MS",1
+"Kirksville, MO",4
+"Bellefontaine, OH",6
+"Goldsboro, NC",3
+"Effingham, IL",2
+"Muscatine, IA",2
+"Bozeman, MT",4
+"St. Joseph, MO-KS",3
+"Paragould, AR",1
+"Lebanon, PA",1
+"Enid, OK",3
+"Red Wing, MN",2
+"Williston, ND",3
+"Emporia, KS",4
+"Medford, OR",1
+"Logan, WV",1
+"Beatrice, NE",2
+"Mount Sterling, KY",5
+"Madison, IN",6
+"Lawrence, KS",4
+"Jamestown, ND",2
+"Janesville-Beloit, WI",2
+"Evanston, WY",3
+"Tupelo, MS",5
+"Greenville, OH",6
+"Blytheville, AR",1
+"Fernley, NV",3
+"Merrill, WI",2
+"Las Vegas-Henderson-Paradise, NV",3
+"Longview, TX",3
+"Easton, MD",3
+"Bay City, TX",3
+"Levelland, TX",3
+"East Stroudsburg, PA",1
+"Columbus, MS",1
+"Mansfield, OH",6
+"Truckee-Grass Valley, CA",3
+"Amsterdam, NY",1
+"Cambridge, OH",6
+"Calhoun, GA",3
+"St. George, UT",3
+"Dickinson, ND",3
+"Mitchell, SD",2
+"North Wilkesboro, NC",5
+"Aberdeen, SD",2
+"Coshocton, OH",6
+"Dalton, GA",3
+"Elkins, WV",5
+"Magnolia, AR",5
+"Eugene, OR",3
+"Gaffney, SC",5
+"Mason City, IA",2
+"Newton, IA",2
+"Decatur, IL",6
+"Shreveport-Bossier City, LA",5
+"Laramie, WY",4
+"Moses Lake, WA",3
+"Elk City, OK",3
+"Gulfport-Biloxi-Pascagoula, MS",5
+"Richmond, IN",6
+"Midland, MI",6
+"Mount Pleasant, TX",6
+"Platteville, WI",2
+"Carlsbad-Artesia, NM",3
+"Cheyenne, WY",3
+"Sulphur Springs, TX",3
+"Albert Lea, MN",2
+"Great Bend, KS",5
+"Scottsboro, AL",5
+"Huntington, IN",6
+"Elko, NV",3
+"Carbondale-Marion, IL",5
+"Brookhaven, MS",5
+"Elkhart-Goshen, IN",6
+"Hobbs, NM",3
+"Ludington, MI",6
+"Ponca City, OK",3
+"Decatur, AL",5
+"Plainview, TX",3
+"Dodge City, KS",3
+"Victoria, TX",3
+"Peoria, IL",6
+"Corsica, TX",5
+"Beeville, TX",3
+"Defiance, OH",6
+"Grants, NM",3
+"Wabash, IN",6
+"The Villages, FL",3
+"tchitoches, LA",1
+"Bradford, PA",8
+"Wausau, WI",2
+"Longview, WA",3
+"Garden City, KS",3
+"Troy, AL",5
+"Hays, KS",4
+"Angola, IN",6
+"Summerville, GA",5
+"Iowa City, IA",4
+"Glens Falls, NY",8
+"Clinton, IA",6
+"Wahpeton, ND-MN",2
+"Selma, AL",1
+"Somerset, KY",5
+"Mountain Home, ID",3
+"Pierre, SD",3
+"DeRidder, LA",5
+"Lexington, NE",3
+"Corpus Christi, TX",3
+"Clarksburg, WV",6
+"Brookings, SD",4
+"Watertown, SD",2
+"Greenfield Town, MA",8
+"Marshalltown, IA",2
+"Kearney, NE",2
+"Newberry, SC",5
+"Liberal, KS",3
+"Jefferson, GA",3
+"Columbus, NE",2
+"Madisonville, KY",6
+"Ocala, FL",8
+"New Orleans-Metairie, LA",3
+"Cedar Rapids, IA",2
+"Evansville, IN-KY",6
+"Hannibal, MO",2
+"Sheridan, WY",3
+"Brownwood, TX",3
+"Burley, ID",8
+"Fort Madison-Keokuk, IA-IL-MO",6
+"Fergus Falls, MN",8
+"Athens, TN",5
+"Fort Morgan, CO",3
+"Frankfort, IN",6
+"Ottawa, KS",6
+"Florence-Muscle Shoals, AL",5
+"Grand Island, NE",2
+"Middlesborough, KY",1
+"Springfield, IL",5
+"Ottawa-Peru, IL",6
+"Wichita, KS",3
+"Kingsville, TX",3
+"Cape Girardeau, MO-IL",5
+"New Castle, IN",6
+"Mineral Wells, TX",3
+"Fayetteville-Springdale-Rogers, AR-MO",5
+"Paducah, KY-IL",5
+"Quincy, IL-MO",2
+"Weirton-Steubenville, WV-OH",6
+"Lawton, OK",3
+"Fremont, OH",6
+"Owaton, MN",2
+"Columbus, IN",6
+"Wilson, NC",5
+"Claremont-Lebanon, NH-VT",8
+"Dublin, GA",5
+"Port Clinton, OH",6
+"Burlington, IA-IL",6
+"Orangeburg, SC",5
+"Storm Lake, IA",2
+"Bay City, MI",6
+"Meadville, PA",8
+"Deming, NM",3
+"Ellensburg, WA",3
+"Wichita Falls, TX",3
+"Bloomington, IN",4
+"Malvern, AR",5
+"Tulsa, OK",3
+"Ada, OK",5
+"Texarka, TX-AR",5
+"Payson, AZ",3
+"Bennettsville, SC",1
+"Astoria, OR",8
+"Canton-Massillon, OH",6
+"Albany, OR",8
+"Joplin, MO",6
+"Warsaw, IN",6
+"Ruston, LA",4
+"Bartlesville, OK",5
+"Summit Park, UT",4
+"Big Rapids, MI",6
+"Mobile, AL",5
+"Pampa, TX",3
+"Cullman, AL",8
+"Terre Haute, IN",6
+"Gloversville, NY",8
+"Rochelle, IL",2
+"Coffeyville, KS",5
+"Arkadelphia, AR",5
+"Beckley, WV",5
+"Charleston, WV",5
+"Baraboo, WI",2
+"Amarillo, TX",3
+"Durango, CO",3
+"Clarksville, TN-KY",5
+"Fallon, NV",3
+"McAlester, OK",5
+"Van Wert, OH",6
+"Sandusky, OH",6
+"Dayton, OH",6
+"Campbellsville, KY",5
+"Minot, ND",2
+"Bowling Green, KY",5
+"Stevens Point, WI",2
+"Indiapolis-Carmel-Anderson, IN",6
+"Manitowoc, WI",2
+"Plymouth, IN",6
+"Lincoln, IL",6
+"Mexico, MO",6
+"Fairfield, IA",2
+"Columbia, SC",5
+"Cordele, GA",5
+"Topeka, KS",2
+"Glenwood Springs, CO",3
+"Lebanon, MO",5
+"Champaign-Urba, IL",4
+"Thomaston, GA",5
+"El Campo, TX",3
+"Macon-Bibb County, GA",5
+"Monroe, LA",5
+"Bucyrus, OH",6
+"Athens, TX",5
+"Toledo, OH",6
+"Harrisonburg, VA",8
+"Lewiston, ID-WA",8
+"Frankfort, KY",6
+"Wapakoneta, OH",6
+"Watertown-Fort Atkinson, WI",2
+"Bloomsburg-Berwick, PA",8
+"Huron, SD",1
+"Zapata, TX",1
+"Gettysburg, PA",8
+"McComb, MS",5
+"Talladega-Sylacauga, AL",5
+"Edwards, CO",1
+"Kokomo, IN",6
+"Sheboygan, WI",3
+"Chattanooga, TN-GA",5
+"Othello, WA",1
+"Marion, IN",6
+"Willmar, MN",2
+"Roswell, NM",3
+"Marshall, MN",2
+"LaGrange, GA",5
+"Miami, OK",6
+"DuBois, PA",8
+"Duncan, OK",3
+"Rapid City, SD",3
+"Bakersfield, CA",7
+"Austin, MN",2
+"Fort Wayne, IN",6
+"Marshall, MO",2
+"Brainerd, MN",8
+"Muskogee, OK",5
+"Brownsville-Harlingen, TX",1
+"Pontiac, IL",6
+"Lexington-Fayette, KY",5
+"Jasper, IN",1
+"Spirit Lake, IA",2
+"Fremont, NE",2
+"Parkersburg-Vien, WV",6
+"Owensboro, KY",6
+"Trenton, NJ",7
+"Valley, AL",5
+"Tuscaloosa, AL",5
+"Sedalia, MO",5
+"Athens-Clarke County, GA",4
+"Bardstown, KY",5
+"Sikeston, MO",5
+"Tullahoma-Manchester, TN",5
+"Zanesville, OH",6
+"Chambersburg-Waynesboro, PA",8
+"Houston-The Woodlands-Sugar Land, TX",7
+"Palestine, TX",5
+"Davenport-Moline-Rock Island, IA-IL",6
+"Martinsville, VA",5
+"Logansport, IN",6
+"Yankton, SD",2
+"Elizabethtown-Fort Knox, KY",6
+"Oneonta, NY",8
+"Fort Smith, AR-OK",5
+"Hutchinson, KS",2
+"Glasgow, KY",5
+"New Philadelphia-Dover, OH",6
+"South Bend-Mishawaka, IN-MI",6
+"Silver City, NM",3
+"tchez, MS-LA",1
+"Richmond-Berea, KY",5
+"Knoxville, TN",8
+"Canton, IL",6
+"Lock Haven, PA",8
+"Des Moines-West Des Moines, IA",2
+"St. Louis, MO-IL",6
+"Charleston-Mattoon, IL",4
+"Jacksonville, IL",2
+"Oklahoma City, OK",3
+"Shawano, WI",8
+"Norfolk, NE",2
+"Iron Mountain, MI-WI",8
+"Vincennes, IN",6
+"Omaha-Council Bluffs, NE-IA",2
+"Craig, CO",3
+"Sterling, IL",2
+"Odessa, TX",3
+"Rocky Mount, NC",5
+"Ashtabula, OH",6
+"Grand Forks, ND-MN",2
+"Ardmore, OK",3
+"Price, UT",3
+"Ontario, OR-ID",8
+"Decatur, IN",6
+"Lubbock, TX",3
+"Bismarck, ND",3
+"Paris, TN",5
+"Huntington-Ashland, WV-KY-OH",6
+"Wisconsin Rapids-Marshfield, WI",2
+"Tifton, GA",5
+"Durant, OK",5
+"Newport, TN",1
+"Morristown, TN",5
+"Cookeville, TN",5
+"Gallup, NM",1
+"Cleveland-Elyria, OH",6
+"New Castle, PA",6
+"Springfield, OH",6
+"Malone, NY",8
+"Vermillion, SD",4
+"Wheeling, WV-OH",6
+"San Angelo, TX",3
+"Steamboat Springs, CO",4
+"Wino, MN",2
+"Montgomery, AL",5
+"Jackson, MS",5
+"Sali, KS",5
+"Jefferson City, MO",2
+"Bloomington, IL",4
+"Danville, VA",5
+"Albertville, AL",8
+"Tyler, TX",5
+"Dubuque, IA",2
+"London, KY",5
+"Birmingham-Hoover, AL",5
+"Fort Leord Wood, MO",3
+"Kendallville, IN",6
+"North Platte, NE",3
+"Kankakee, IL",6
+"Fairmont, WV",8
+"Salem, OR",8
+"Johnson City, TN",5
+"Blacksburg-Christiansburg-Radford, VA",4
+"Rolla, MO",5
+"Casper, WY",3
+"Cornelia, GA",8
+"Tiffin, OH",6
+"Greenwood, SC",5
+"Las Vegas, NM",3
+"Spartanburg, SC",5
+"Shelton, WA",8
+"Celi, OH",6
+"Cleveland, TN",5
+"Flagstaff, AZ",3
+"Memphis, TN-MS-AR",5
+"Mankato-North Mankato, MN",2
+"Waco, TX",5
+"Plattsburgh, NY",8
+"Louisville/Jefferson County, KY-IN",6
+"Gillette, WY",3
+"Indianola, MS",1
+"Augusta-Richmond County, GA-SC",5
+"Mount Vernon-Acortes, WA",8
+"St. Cloud, MN",2
+"Greeley, CO",3
+"Springfield, MO",5
+"Duluth, MN-WI",8
+"Ottumwa, IA",2
+"Shawnee, OK",3
+"Fond du Lac, WI",2
+"Thomasville, GA",5
+"Butte-Silver Bow, MT",8
+"Florence, SC",5
+"Norwalk, OH",6
+"Ames, IA",4
+"Huntsville, AL",5
+"Verl, UT",3
+"Waterloo-Cedar Falls, IA",6
+"Madison, WI",4
+"Dyersburg, TN",5
+"Whitewater-Elkhorn, WI",2
+"Douglas, GA",5
+"Marion, NC",5
+"shville-Davidson--Murfreesboro--Franklin, TN",5
+"Anniston-Oxford-Jacksonville, AL",5
+"Gadsden, AL",5
+"Oil City, PA",8
+"Hood River, OR",8
+"Danville, KY",5
+"Borger, TX",3
+"Arkansas City-Winfield, KS",3
+"Hattiesburg, MS",5
+"Stillwater, OK",4
+"Savanh, GA",3
+"Danville, IL",5
+"Marshall, TX",5
+"Kansas City, MO-KS",6
+"Alice, TX",3
+"Stephenville, TX",5
+"The Dalles, OR",8
+"Corinth, MS",5
+"Batesville, AR",5
+"Scottsbluff, NE",3
+"Galesburg, IL",6
+"Lewisburg, PA",8
+"Macomb, IL",4
+"Warren, PA",8
+"Greenwood, MS",1
+"Eau Claire, WI",2
+"Parsons, KS",5
+"Laurinburg, NC",5
+"Ashland, OH",6
+"Guymon, OK",3
+"Lake City, FL",5
+"Jacksonville, TX",5
+"Sioux Falls, SD",2
+"Lafayette-West Lafayette, IN",4
+"Union City, TN-KY",6
+"Bedford, IN",6
+"Little Rock-North Little Rock-Conway, AR",5
+"Marietta, OH",6
+"Rockingham, NC",5
+"St. Marys, GA",3
+"Batavia, NY",8
+"Sagiw, MI",6
+"Muncie, IN",6
+"Daphne-Fairhope-Foley, AL",8
+"Sierra Vista-Douglas, AZ",3
+"Palatka, FL",5
+"Olympia-Tumwater, WA",8
+"Columbus, OH",6
+"Hagerstown-Martinsburg, MD-WV",8
+"Alpe, MI",6
+"Hutchinson, MN",2
+"Clarksdale, MS",1
+"Brunswick, GA",8
+"Richmond, VA",8
+"Houma-Thibodaux, LA",5
+"Dothan, AL",5
+"Holland, MI",6
+"Big Stone Gap, VA",5
+"Alexandria, LA",5
+"Beaver Dam, WI",2
+"Marion, OH",6
+"Cleveland, MS",1
+"Urba, OH",6
+"Georgetown, SC",3
+"Selinsgrove, PA",8
+"Seneca, SC",8
+"Seymour, IN",6
+"Roanoke Rapids, NC",5
+"Lake Havasu City-Kingman, AZ",3
+"Winnemucca, NV",3
+"Blackfoot, ID",8
+"Twin Falls, ID",8
+"Alamogordo, NM",3
+"Sidney, OH",6
+"West Plains, MO",5
+"Pine Bluff, AR",5
+"Prescott, AZ",3
+"Bluefield, WV-VA",5
+"cogdoches, TX",5
+"Corvallis, OR",4
+"Sherman-Denison, TX",5
+"Branson, MO",5
+"Oskaloosa, IA",2
+"Hermiston-Pendleton, OR",8
+"Spearfish, SD",3
+"Green Bay, WI",2
+"Vicksburg, MS",5
+"Point Pleasant, WV-OH",6
+"Poplar Bluff, MO",5
+"Clovis, NM",3
+"Milledgeville, GA",5
+"Russellville, AR",8
+"Cincinti, OH-KY-IN",6
+"Cadillac, MI",6
+"Pittsburgh, PA",7
+"Cullowhee, NC",5
+"Moberly, MO",6
+"Peru, IN",6
+"Port Lavaca, TX",3
+"Winston-Salem, NC",8
+"Akron, OH",6
+"Appleton, WI",2
+"Dallas-Fort Worth-Arlington, TX",7
+"North Vernon, IN",6
+"Burlington, NC",5
+"Pensacola-Ferry Pass-Brent, FL",3
+"Huntsville, TX",5
+"Columbus, GA-AL",5
+"Lakeland-Winter Haven, FL",8
+"Roanoke, VA",5
+"Charlottesville, VA",4
+"Cumberland, MD-WV",8
+"San Antonio-New Braunfels, TX",3
+"Detroit-Warren-Dearborn, MI",6
+"Camden, AR",5
+"Marquette, MI",8
+"Shelby, NC",5
+"Lufkin, TX",5
+"Traverse City, MI",6
+"Sumter, SC",5
+"Altus, OK",3
+"Kennett, MO",5
+"Kerrville, TX",3
+"McMinnville, TN",5
+"Crossville, TN",8
+"College Station-Bryan, TX",4
+"La Grande, OR",8
+"Staunton-Waynesboro, VA",8
+"Uvalde, TX",3
+"Valdosta, GA",5
+"Kalamazoo-Portage, MI",6
+"Wooster, OH",6
+"Maysville, KY",1
+"Rome, GA",5
+"Hammond, LA",5
+"Jesup, GA",5
+"Meridian, MS",5
+"Youngstown-Warren-Boardman, OH-PA",6
+"Idaho Falls, ID",8
+"Klamath Falls, OR",8
+"Pueblo, CO",3
+"Charleston-North Charleston, SC",8
+"Portales, NM",3
+"Merced, CA",7
+"Chicago-perville-Elgin, IL-IN-WI",7
+"Santa Fe, NM",3
+"Statesboro, GA",4
+"La Crosse-Olaska, WI-MN",2
+"Lincoln, NE",2
+"Oxford, NC",5
+"Monroe, MI",6
+"Greensboro-High Point, NC",8
+"Pottsville, PA",8
+"Greenville, MS",1
+"Columbia, MO",4
+"Coldwater, MI",6
+"Morgantown, WV",8
+"Pahrump, NV",3
+"Lansing-East Lansing, MI",6
+"Warrensburg, MO",4
+"Winchester, VA-WV",8
+"Ionia, MI",6
+"Denver-Aurora-Lakewood, CO",7
+"Alexandria, MN",2
+"Maryville, MO",4
+"Boone, IA",2
+"Mount Airy, NC",8
+"Lumberton, NC",5
+"Roseburg, OR",8
+"Hailey, ID",8
+"Fitzgerald, GA",1
+"Shelbyville, TN",5
+"Berlin, NH-VT",8
+"Weatherford, OK",3
+"Rochester, MN",2
+"Sterling, CO",3
+"Minneapolis-St. Paul-Bloomington, MN-WI",7
+"Grand Rapids-Wyoming, MI",6
+"Mayfield, KY",6
+"Toccoa, GA",5
+"Muskegon, MI",6
+"Rockford, IL",6
+"Sevierville, TN",8
+"EspaÃ±ola, NM",3
+"Fargo, ND-MN",2
+"Ann Arbor, MI",4
+"Greenville-Anderson-Mauldin, SC",5
+"Corning, NY",8
+"Lafayette, LA",5
+"Altoo, PA",8
+"Austin-Round Rock, TX",8
+"Watertown-Fort Drum, NY",8
+"Bemidji, MN",5
+"Big Spring, TX",3
+"Sioux City, IA-NE-SD",2
+"Jackson, WY-ID",4
+"Waycross, GA",5
+"Chillicothe, OH",6
+"Milwaukee-Waukesha-West Allis, WI",6
+"Walla Walla, WA",8
+"Gardnerville Ranchos, NV",3
+"Asheville, NC",8
+"Ocean City, NJ",7
+"Gainesville, GA",7
+"Racine, WI",6
+"Beaumont-Port Arthur, TX",5
+"Seneca Falls, NY",8
+"Somerset, PA",8
+"Enterprise, AL",5
+"Cedar City, UT",8
+"Vidalia, GA",5
+"Dayton, TN",5
+"Kalispell, MT",8
+"Billings, MT",3
+"Martin, TN",6
+"Paris, TX",5
+"Battle Creek, MI",6
+"Bastrop, LA",5
+"Alma, MI",6
+"State College, PA",4
+"Heber, UT",8
+"Greeneville, TN",8
+"Hot Springs, AR",5
+"Atlantic City-Hammonton, NJ",7
+"Williamsport, PA",8
+"Jonesboro, AR",5
+"Oxford, MS",4
+"India, PA",8
+"Flint, MI",6
+"Houghton, MI",4
+"Red Bluff, CA",7
+"Owosso, MI",6
+"Sanford, NC",8
+"Bogalusa, LA",5
+"Newport, OR",8
+"Show Low, AZ",1
+"Gainesville, FL",4
+"Albuquerque, NM",3
+"Murray, KY",4
+"Utica-Rome, NY",8
+"El Paso, TX",3
+"Connersville, IN",6
+"Salisbury, MD-DE",7
+"Jacksonville, FL",5
+"Adrian, MI",6
+"Pama City, FL",3
+"Grand Junction, CO",8
+"Henderson, NC",5
+"Hickory-Lenoir-Morganton, NC",8
+"Salem, OH",6
+"Starkville, MS",4
+"Jackson, MI",6
+"Atlanta-Sandy Springs-Roswell, GA",7
+"Picayune, MS",5
+"Hilton Head Island-Bluffton-Beaufort, SC",8
+"Harrisburg-Carlisle, PA",8
+"Escaba, MI",8
+"Sayre, PA",8
+"Sandpoint, ID",8
+"Fort Collins, CO",8
+"Rexburg, ID",4
+"Warner Robins, GA",5
+"Junction City, KS",3
+"Searcy, AR",3
+"CaÃ±on City, CO",8
+"Harrison, AR",8
+"Sebastian-Vero Beach, FL",7
+"New Ulm, MN",2
+"Auburn-Opelika, AL",5
+"Reno, NV",3
+"Portsmouth, OH",6
+"Reading, PA",7
+"Ozark, AL",5
+"Myrtle Beach-Conway-North Myrtle Beach, SC-NC",8
+"Crestview-Fort Walton Beach-Destin, FL",8
+"Niles-Benton Harbor, MI",6
+"Hele-West Hele, AR",1
+"Scranton--Wilkes-Barre--Hazleton, PA",8
+"Boulder, CO",4
+"Allentown-Bethlehem-Easton, PA-NJ",7
+"Charlotte-Concord-Gastonia, NC-SC",8
+"Spokane-Spokane Valley, WA",8
+"El Centro, CA",7
+"Nogales, AZ",3
+"Americus, GA",1
+"Mount Pleasant, MI",4
+"Barnstable Town, MA",7
+"Delto-Dayto Beach-Ormond Beach, FL",8
+"Killeen-Temple, TX",3
+"Coeur d'Alene, ID",8
+"Moultrie, GA",1
+"Sault Ste. Marie, MI",8
+"Wetchee, WA",8
+"Hele, MT",3
+"Port St. Lucie, FL",7
+"Washington Court House, OH",6
+"Lancaster, PA",7
+"Phoenix-Mesa-Scottsdale, AZ",7
+"Taos, NM",3
+"Okeechobee, FL",8
+"Kill Devil Hills, NC",8
+"Clewiston, FL",7
+"Fort Polk South, LA",5
+"Missoula, MT",8
+"Wauchula, FL",7
+"Prineville, OR",3
+"Kingsport-Bristol-Bristol, TN-VA",8
+"Logan, UT-ID",8
+"Cambridge, MD",7
+"Orlando-Kissimmee-Sanford, FL",7
+"Aberdeen, WA",8
+"Hillsdale, MI",6
+"Hanford-Corcoran, CA",7
+"Montrose, CO",8
+"Greenville, NC",5
+"Albany, GA",5
+"Dover, DE",7
+"Virginia Beach-Norfolk-Newport News, VA-NC",8
+"Washington-Arlington-Alexandria, DC-VA-MD-WV",7
+"Salt Lake City, UT",7
+"Erie, PA",8
+"Laredo, TX",1
+"North Port-Sarasota-Bradenton, FL",8
+"Hinesville, GA",3
+"Palm Bay-Melbourne-Titusville, FL",7
+"Wilmington, NC",8
+"Tallahassee, FL",5
+"Centralia, WA",8
+"Colorado Springs, CO",3
+"Mount Vernon, IL",5
+"Cedartown, GA",5
+"Sunbury, PA",8
+"Kinston, NC",5
+"Susanville, CA",3
+"Pittsfield, MA",8
+"Great Falls, MT",8
+"Baltimore-Columbia-Towson, MD",7
+"Forest City, NC",5
+"Burlington-South Burlington, VT",8
+"Oshkosh-Neeh, WI",2
+"Rochester, NY",8
+"Safford, AZ",3
+"Lima, OH",6
+"Bend-Redmond, OR",8
+"Concord, NH",8
+"Cape Coral-Fort Myers, FL",3
+"Centralia, IL",6
+"Pocatello, ID",8
+"Ogden-Clearfield, UT",7
+"Raleigh, NC",8
+"Athens, OH",4
+"Providence-Warwick, RI-MA",7
+"Boise City, ID",8
+"Eagle Pass, TX",1
+"Vineland-Bridgeton, NJ",7
+"Durham-Chapel Hill, NC",5
+"Albemarle, NC",5
+"Vallejo-Fairfield, CA",7
+"Bellingham, WA",8
+"Yakima, WA",7
+"Tahlequah, OK",5
+"Miami-Fort Lauderdale-West Palm Beach, FL",7
+"Bangor, ME",5
+"ples-Immokalee-Marco Island, FL",7
+"New Bern, NC",5
+"Fayetteville, NC",5
+"Portland-Vancouver-Hillsboro, OR-WA",7
+"Ukiah, CA",7
+"Philadelphia-Camden-Wilmington, PA-NJ-DE-MD",7
+"Pinehurst-Southern Pines, NC",8
+"Albany-Schenectady-Troy, NY",8
+"Brevard, NC",8
+"Punta Gorda, FL",8
+"Elizabeth City, NC",5
+"Tampa-St. Petersburg-Clearwater, FL",8
+"Provo-Orem, UT",8
+"Washington, NC",3
+"Mountain Home, AR",8
+"Cortland, NY",8
+"Augusta-Waterville, ME",8
+"Manhattan, KS",4
+"Johnstown, PA",8
+"Grants Pass, OR",1
+"Olean, NY",8
+"Redding, CA",7
+"Yuma, AZ",3
+"Visalia-Porterville, CA",7
+"Portland-South Portland, ME",8
+"Los Alamos, NM",1
+"Worcester, MA-CT",8
+"San Luis Obispo-Paso Robles-Arroyo Grande, CA",7
+"Jackson, TN",5
+"Jackson, OH",6
+"Rio Grande City, TX",1
+"Sebring, FL",3
+"Madera, CA",7
+"Bennington, VT",8
+"Norwich-New London, CT",8
+"Brookings, OR",8
+"Del Rio, TX",3
+"Tucson, AZ",3
+"Coos Bay, OR",8
+"Hartford-West Hartford-East Hartford, CT",7
+"Elmira, NY",8
+"Carson City, NV",8
+"Findlay, OH",6
+"Kennewick-Richland, WA",2
+"Laconia, NH",8
+"Port Angeles, WA",8
+"Morehead City, NC",3
+"Syracuse, NY",8
+"New Haven-Milford, CT",7
+"Boston-Cambridge-Newton, MA-NH",7
+"Riverside-San Berrdino-Ontario, CA",7
+"Bridgeport-Stamford-Norwalk, CT",7
+"Pullman, WA",4
+"pa, CA",7
+"Modesto, CA",7
+"Homosassa Springs, FL",8
+"Stockton-Lodi, CA",7
+"Springfield, MA",7
+"Oxrd-Thousand Oaks-Ventura, CA",7
+"Seattle-Tacoma-Bellevue, WA",8
+"San Francisco-Oakland-Hayward, CA",7
+"Clearlake, CA",7
+"Kingston, NY",7
+"Crescent City, CA",8
+"Binghamton, NY",8
+"Auburn, NY",8
+"Torrington, CT",7
+"Hudson, NY",8
+"Santa Rosa, CA",7
+"Manchester-shua, NH",8
+"Eureka-Arcata-Fortu, CA",8
+"Los Angeles-Long Beach-Aheim, CA",7
+"Moscow, ID",4
+"Santa Maria-Santa Barbara, CA",7
+"San Jose-Sunnyvale-Santa Clara, CA",7
+"Fresno, CA",7
+"Lewiston-Auburn, ME",8
+"Chico, CA",7
+"Salis, CA",7
+"Sacramento--Roseville--Arden-Arcade, CA",7
+"Dunn, NC",5
+"Keene, NH",8
+"Sonora, CA",3
+"Buffalo-Cheektowaga-Niagara Falls, NY",8
+"Huntingdon, PA",8
+"San Diego-Carlsbad, CA",7
+"Yuba City, CA",7
+"Wilmington, OH",6
+"New York-Newark-Jersey City, NY-NJ-PA",7
+"Bremerton-Silverdale, WA",8
+"Boone, NC",4
+"Mount Vernon, OH",6
+"Spencer, IA",2
+"Rutland, VT",8
+"Santa Cruz-Watsonville, CA",7
+"Oak Harbor, WA",8
+"Jacksonville, NC",3
+"Ithaca, NY",4
