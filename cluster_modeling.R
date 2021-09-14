@@ -21,7 +21,7 @@ dat <- as.matrix(scale(dat, center = TRUE, scale = TRUE))
 dat_mc <- Mclust(dat, G=c(1:20))
 summary(dat_mc)
 plot(dat_mc, what='BIC', ylim=c(-38000,-37000))
-
+plot(dat_mc, what='BIC')
 #model type VVE chosen as best, with similar BIC scores for 7-12 clusters
 #to do additional model comparisons, generate and compare VVE models with 7-12 clusters
 dat_mc7 <- Mclust(dat, G=7, modelNames="VVE")
@@ -49,9 +49,22 @@ dat_mc8$classification
 
 #write csv file
 write.csv(dat_mc8$classification,file=here("results/cluster_assignment.csv"))
-
+data<-read.csv("results/cluster_assignment.csv")
 
 #print table showing probability that city belongs to class
 class_prob <- round(dat_mc8$z, digits=3)
 class_prob
+#######################3
+
+library("raster")
+library("rgdal")
+library("sp")
+
+msa_Boundary <-readOGR(here("data/MSA"),"tl_2018_us_cbsa") 
+plot(msa_Boundary,
+     lwd=1,
+     main="MSA Boundaries")
+merged <- merge(msa_Boundary,data,by.x="NAME",by.y="X")
+plot(merged["x"])                               
+spplot(merged,"x")
 
