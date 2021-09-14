@@ -6,7 +6,7 @@ dat_raw <- read.csv(here("data/CommunityData-raw-2015.csv"))
 #select columns of interest
 dat  <- dat_raw[,c(4:ncol(dat_raw))]
 #convert to dataframe
-dat = as.data.frame(unclass(dat))
+dat <- as.data.frame(unclass(dat))
 #set rownames to city names
 rownames(dat)=dat_raw$ME
 #look at data
@@ -44,6 +44,7 @@ w_BIC <- round(exp(-0.5*delta_BIC)/sum(exp(-0.5*delta_BIC)), digits=3)
 results_table <- cbind.data.frame(clusters=c(7:12),BIC=BICs,delta_BIC,weight=w_BIC)
 results_table
 
+
 #extract classifications, e.g., which city belongs to which cluster
 dat_mc8$classification
 
@@ -55,3 +56,18 @@ write.csv(dat_mc8$classification,file=here("results/cluster_assignment.csv"))
 class_prob <- round(dat_mc8$z, digits=3)
 class_prob
 
+
+
+#######################3
+
+library("raster")
+library("rgdal")
+library("sp")
+
+msa_Boundary <-readOGR(here("data/MSA"),"tl_2018_us_cbsa") 
+plot(msa_Boundary,
+     lwd=1,
+     main="MSA Boundaries")
+merged <- merge(msa_Boundary,data,by.x="NAME",by.y="X")
+plot(merged["x"])                               
+spplot(merged,"x")
