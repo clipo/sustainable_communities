@@ -10,6 +10,11 @@
 library(shiny)
 library(leaflet)
 library(here)
+library("raster")
+library("rgdal")
+library("sp")
+library("RCurl")
+library(RCurl)
 
 URL <- "https://www2.census.gov/geo/tiger/TIGER2018/CBSA/tl_2018_us_cbsa.zip"
 download.file(URL,destfile=here("data/MSA/MSA.zip"),method="libcurl")
