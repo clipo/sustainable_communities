@@ -69,3 +69,23 @@ msa_Boundary <-readOGR(here("data/MSA"),"tl_2018_us_cbsa")
 merged <- merge(msa_Boundary,data,by.x="NAME",by.y="X")
 spplot(merged,"x")
 
+library(leaflet) 
+leaflet(merged) %>%
+  addPolygons()
+
+library(leaflet) 
+pal <- colorFactor(rainbow(8), merged$x,
+                   na.color = "transparent")
+p_popup <- paste0("<strong>MSA: </strong>", merged$NAME)
+
+leaflet(merged) %>%
+  addPolygons(
+  stroke = FALSE, # remove polygon borders
+  fillColor = ~pal(x), # set fill color with function from above and value
+fillOpacity = 0.8, smoothFactor = 0.5, # make it nicer
+popup = p_popup) %>%
+  addTiles() %>%
+  addLegend("bottomright",  # location
+            pal=pal,    # palette function
+            values=~x,  # value to be passed to palette function
+            title = 'Cluster') # legend title
