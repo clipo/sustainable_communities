@@ -55,32 +55,17 @@ data<-read.csv("results/cluster_assignment.csv")
 #print table showing probability that city belongs to class
 class_prob <- round(dat_mc8$z, digits=3)
 class_prob
-#######################3
+#######################
 
 library("raster")
 library("rgdal")
 library("sp")
-
+library("RCurl")
+library(RCurl)
+URL <- "https://www2.census.gov/geo/tiger/TIGER2018/CBSA/tl_2018_us_cbsa.zip"
+download.file(URL,destfile="data/MSA/MSA.zip",method="libcurl")
+unzip(here("data/MSA/MSA.zip"))
 msa_Boundary <-readOGR(here("data/MSA"),"tl_2018_us_cbsa") 
-plot(msa_Boundary,
-     lwd=1,
-     main="MSA Boundaries")
 merged <- merge(msa_Boundary,data,by.x="NAME",by.y="X")
-plot(merged["x"])                               
 spplot(merged,"x")
 
-
-
-#######################3
-
-library("raster")
-library("rgdal")
-library("sp")
-
-msa_Boundary <-readOGR(here("data/MSA"),"tl_2018_us_cbsa") 
-plot(msa_Boundary,
-     lwd=1,
-     main="MSA Boundaries")
-merged <- merge(msa_Boundary,data,by.x="NAME",by.y="X")
-plot(merged["x"])                               
-spplot(merged,"x")
