@@ -16,10 +16,10 @@ library("sp")
 library("RCurl")
 library(RCurl)
 
-URL <- "https://www2.census.gov/geo/tiger/TIGER2018/CBSA/tl_2018_us_cbsa.zip"
-download.file(URL,destfile=here("data/MSA/MSA.zip"),method="libcurl")
-unzip(here("data/MSA/MSA.zip"))
-msa_Boundary <-readOGR(here("data/MSA"),"tl_2018_us_cbsa") 
+#URL <- "https://www2.census.gov/geo/tiger/TIGER2018/CBSA/tl_2018_us_cbsa.zip"
+#download.file(URL,destfile=here("data/MSA/MSA.zip"),method="libcurl")
+#unzip(here("data/MSA/MSA.zip"))
+msa_Boundary <-readOGR(".","tl_2018_us_cbsa") 
 merged <- merge(msa_Boundary,data,by.x="NAME",by.y="X")
 spplot(merged,"x")
 pal <- colorFactor(rainbow(8), merged$x,
@@ -30,7 +30,7 @@ p_popup <- paste0("<strong>MSA: </strong>", merged$NAME)
 ui <- fluidPage(
   leafletOutput("mymap"),
   p(),
-  actionButton("recalc", "New points")
+  actionButton("recalc", "This button doesn't do anything.")
 )
 server <- function(input, output, session) {
   
