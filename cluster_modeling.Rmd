@@ -1,13 +1,27 @@
-#Load Packages
+---
+title: "MSA Cluster Modeling"
+author: "Robert J. DiNapoli"
+date: "9/15/2021"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Load Packages
+
+```{r}
 library(here)
 library(mclust)
 library(raster)
 library(rgdal)
 library(sp)
-library(RColorBrewer)
-library(OpenStreetMap)
+library(knitr)
+```
 
-
+# Import Data
+```{r}
 
 #import raw data
 dat_raw <- read.csv(here("data/CommunityData-raw-2015.csv"))
@@ -24,14 +38,25 @@ head(dat)
 dat = na.omit(dat)
 # convert to z-scores
 dat <- as.matrix(scale(dat, center = TRUE, scale = TRUE))
+```
 
+# Run Cluster GMM
+```{r}
 #run mclust on 1 to 20 clusters
 dat_mc <- Mclust(dat, G=c(1:20))
+#print summary of model fit
 summary(dat_mc)
-plot(dat_mc, what='BIC', ylim=c(-37000,-35000))
+```
+
+# Model comparison
+```{r}
+#plot BIC scores of different models
 plot(dat_mc, what='BIC')
-#model type VVE chosen as best, with similar BIC scores for 7-12 clusters
-#to do additional model comparisons, generate and compare VVE models with 7-12 clusters
+#zoom in on best-fitting models
+plot(dat_mc, what='BIC', ylim=c(-37000,-35000))
+
+#model type VVE chosen as best, with similar BIC scores for 9-12 clusters
+#to do additional model comparisons, generate and compare VVE models with 9-12 clusters
 dat_mc9 <- Mclust(dat, G=9, modelNames="VVE")
 dat_mc10 <- Mclust(dat, G=10, modelNames="VVE")
 dat_mc11 <- Mclust(dat, G=11, modelNames="VVE")
@@ -51,21 +76,30 @@ results_table <- cbind.data.frame(clusters=c(9:12),BIC=BICs,delta_BIC,weight=w_B
 #order by delta
 results_table <- results_table[order(delta_BIC),] 
 rownames(results_table)<-NULL
-results_table
-#extract classifications, e.g., which city belongs to which cluster
-dat_mc10$classification
+#print table
+kable(results_table[1:4], caption = "Model Comparison")
+```
 
-#write csv file
+# Extract and map cluster classifications
+```{r}
+#extract classifications, e.g., which MSA belongs to which cluster, write to CSV
 write.csv(dat_mc10$classification,file=here("results/cluster_assignment.csv"))
 data<-read.csv("results/cluster_assignment.csv")
 
-#print table showing probability that MSA belongs to class
-class_prob <- round(dat_mc10$z, digits=3)
-class_prob
+#import MSA boundaries shapefile
+msa_Boundary <-readOGR(here("data/MSA"),"tl_2015_us_cbsa") 
+#merge polygons with cluster IDs
+merged <- merge(msa_Boundary,data,by.x="NAME",by.y="X")
+#remove any cases MSAs with no cluster assignments
+merged_clean <- merged[!is.na(merged$x),]
+#convert cluster ID to factor
+merged_clean$x_f <- as.factor(merged_clean$x)
+#plot
+spplot(merged_clean, "x_f", col.regions=brewer.pal(10,'Spectral'))
+```
 
-
-##########################################################3
-#examine which clusters score highly in different metrics
+# Examine how clusters score in different metrics
+```{r}
 #new data frame
 dat_clust <- as.data.frame(dat)
 #add names
@@ -73,29 +107,8 @@ dat_clust$ME <- rownames(dat)
 rownames(dat_clust) <- NULL
 #merge in cluster assignments
 dat_clust <- merge(dat_clust,data,by.x="ME",by.y="X")
-head(dat_clust)
 
-#Poverty, low
-boxplot(dat_clust$Per_Poverty~dat_clust$x, ylab='Poverty %', xlab="Cluster")
-
-#Inequality, low
-boxplot(dat_clust$Gini~dat_clust$x, ylab='Gini', xlab="Cluster")
-
-#Food insecurity, low
-boxplot(dat_clust$FOOD_INS~dat_clust$x, ylab='Food Insecurity', xlab="Cluster")
-
-#Air Quality, high
-boxplot(dat_clust$AQI_Good~dat_clust$x, ylab="Air Quality Index", xlab="Cluster")
-
-#Health, low
-boxplot(dat_clust$poor_health_percent~dat_clust$x, ylab="Poor Health %", xlab="Cluster")
-
-#Crime, low
-boxplot(dat_clust$VIO_CRIME~dat_clust$x, ylab="Violent Crime", xlab="Cluster")
-
-
-#plot subsets
-
+#boxplots of scores for clusters
 par(mfrow=c(2,5), mar=c(2.5,5,2.5,3))
 boxplot(subset(dat_clust, x=="1")[2:17], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 1")
 boxplot(subset(dat_clust, x=="2")[2:17], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 2")
@@ -109,6 +122,7 @@ boxplot(subset(dat_clust, x=="9")[2:17], horizontal=T, las=1, ylim=c(-4,4), main
 boxplot(subset(dat_clust, x=="10")[2:17], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 10")
 par(mfrow=c(1,1))
 
+#dotplots of cluster mean values
 #calculate cluster means for different variables
 c1m <- data.frame(one=colMeans(subset(dat_clust, x=="1")[2:17]))
 c2m <- data.frame(two=colMeans(subset(dat_clust, x=="2")[2:17]))
@@ -147,29 +161,21 @@ abline(v=0, lwd=2)
 dotchart(cluster_means$ten, labels=cluster_means$variable,xlim=c(-2,2), main='Cluster 10', pch=16)
 abline(v=0, lwd=2)
 par(mfrow=c(1,1))
+```
 
-#rotate columns and rows
-cluster_means_t <- cluster_means[1:10]
-row.names(cluster_means_t) <- cluster_means$variable
-cluster_means_t <- data.frame(t(cluster_means_t))
-cluster_means_t$cluster <- row.names(cluster_means_t)
-row.names(cluster_means_t) <- NULL
-cluster_means_t
-
-dotchart(cluster_means_t[,1], labels=cluster_means_t$cluster)
-
-#dimension reduction
+# Dimension reduction
+```{r}
+#run discriminant analysis on clusters
 DR <- MclustDR(dat_mc10, lambda = 1) #setting lambda to 1 gives most separating directions
 summary(DR)
 
-
+#plot eigenvalues
 plot(c(1:17),DR$evalues,ylab="eigenvalues", xlab="component", type="o", pch=16)
 
+#plot all pairs of combinations
 plot(DR, what='pairs',symbols=c("1","2","3","4","5","6","7","8","9","10"),
      colors=c("red","blue","green","goldenrod2","violet","brown","black","grey30","slateblue2","seagreen3"))
 
-plot(DR, what='pairs',symbols=c("1","2","3","4","5","6","7","8","9","10"),
-     colors=brewer.pal(10,"Spectral"))
 
 #plot directions for variables
 Directions <- data.frame(d1=DR$basis[,1],d2=DR$basis[,2],
@@ -208,64 +214,5 @@ abline(v=0, lwd=2)
 abline(v=c(0.1,-0.1),lty=2)
 par(mfrow=c(1,1))
 
+```
 
-#######################
-# Map clusters
-
-
-# MSA shapefile from - https://www2.census.gov/geo/tiger/TIGER2015/CBSA/
-msa_Boundary <-readOGR(here("data/MSA"),"tl_2015_us_cbsa") 
-#merge them
-merged <- merge(msa_Boundary,data,by.x="NAME",by.y="X")
-#remove any cases MSAs with no cluster assignments
-merged_clean <- merged[!is.na(merged$x),]
-#convert x to factor
-merged_clean$x_f <- as.factor(merged_clean$x)
-
-#use brewer colors
-spplot(merged_clean, "x_f", col.regions=brewer.pal(10,'Spectral'))
-#try different colors
-mycolors <- c('blue3','sienna3','seagreen3', 'darkslateblue',
-              'goldenrod2', 'slateblue2','deeppink2', 'chocolate4')
-mycolors2 <- c("red","blue","green","goldenrod2","violet","brown","black","grey30","slateblue2","seagreen3")
-spplot(merged_clean, "x_f", col.regions=mycolors2)
-
-# png(here("results/clustermap.png"),width=12, height=6, units="in", res=300)
-# spplot(merged_clean, "x_f", col.regions=brewer.pal(10,'Spectral'))
-# dev.off()
-
-# #USA shapefile
-# USA <- readOGR(here("data/US_shapefile"),"cb_2018_us_state_20m")
-# spplot(USA[7],add=T)
-
-
-#
-library("RCurl")
-library(RCurl)
-URL <- "https://www2.census.gov/geo/tiger/TIGER2018/CBSA/tl_2018_us_cbsa.zip"
-download.file(URL,destfile="data/MSA/MSA.zip",method="libcurl")
-unzip(here("data/MSA/MSA.zip"))
-msa_Boundary <-readOGR(here("data/MSA"),"tl_2018_us_cbsa") 
-merged <- merge(msa_Boundary,data,by.x="NAME",by.y="X")
-spplot(merged,"x")
-
-library(leaflet) 
-leaflet(merged) %>%
-  addPolygons()
-
-library(leaflet) 
-pal <- colorFactor(rainbow(8), merged$x,
-                   na.color = "transparent")
-p_popup <- paste0("<strong>MSA: </strong>", merged$NAME)
-
-leaflet(merged) %>%
-  addPolygons(
-    stroke = FALSE, # remove polygon borders
-    fillColor = ~pal(x), # set fill color with function from above and value
-    fillOpacity = 0.8, smoothFactor = 0.5, # make it nicer
-    popup = p_popup) %>%
-  addTiles() %>%
-  addLegend("bottomright",  # location
-            pal=pal,    # palette function
-            values=~x,  # value to be passed to palette function
-            title = 'Cluster') # legend title
