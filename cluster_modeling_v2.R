@@ -5,9 +5,6 @@ library(raster)
 library(rgdal)
 library(sp)
 library(RColorBrewer)
-library(OpenStreetMap)
-
-
 
 #import raw data
 dat_raw <- read.csv(here("data/CommunityData-raw-2015.csv"))

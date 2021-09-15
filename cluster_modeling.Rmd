@@ -2,7 +2,7 @@
 title: "MSA Cluster Modeling"
 author: "Robert J. DiNapoli"
 date: "9/15/2021"
-output: word_document
+output: html_document
 ---
 
 ```{r setup, include=FALSE}
@@ -17,6 +17,7 @@ library(mclust)
 library(raster)
 library(rgdal)
 library(sp)
+library(RColorBrewer)
 library(knitr)
 ```
 
@@ -108,6 +109,23 @@ rownames(dat_clust) <- NULL
 #merge in cluster assignments
 dat_clust <- merge(dat_clust,data,by.x="ME",by.y="X")
 
+#calculate cluster means for different variables
+c1m <- data.frame(one=colMeans(subset(dat_clust, x=="1")[2:17]))
+c2m <- data.frame(two=colMeans(subset(dat_clust, x=="2")[2:17]))
+c3m <- data.frame(three=colMeans(subset(dat_clust, x=="3")[2:17]))
+c4m <- data.frame(four=colMeans(subset(dat_clust, x=="4")[2:17]))
+c5m <- data.frame(five=colMeans(subset(dat_clust, x=="5")[2:17]))
+c6m <- data.frame(six=colMeans(subset(dat_clust, x=="6")[2:17]))
+c7m <- data.frame(seven=colMeans(subset(dat_clust, x=="7")[2:17]))
+c8m <- data.frame(eight=colMeans(subset(dat_clust, x=="8")[2:17]))
+c9m <- data.frame(nine=colMeans(subset(dat_clust, x=="9")[2:17]))
+c10m <- data.frame(ten=colMeans(subset(dat_clust, x=="10")[2:17]))
+cluster_means <- cbind.data.frame(c1m,c2m,c3m,c4m,c5m,c6m,c7m,c8m, c9m, c10m)
+cluster_means$variable <- row.names(cluster_means)
+rownames(cluster_means) <- NULL
+```
+
+```{r, fig.width=30,fig.height=15}
 #boxplots of scores for clusters
 par(mfrow=c(2,5), mar=c(2.5,5,2.5,3))
 boxplot(subset(dat_clust, x=="1")[2:17], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 1")
@@ -121,24 +139,10 @@ boxplot(subset(dat_clust, x=="8")[2:17], horizontal=T, las=1, ylim=c(-4,4), main
 boxplot(subset(dat_clust, x=="9")[2:17], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 9")
 boxplot(subset(dat_clust, x=="10")[2:17], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 10")
 par(mfrow=c(1,1))
+```
 
+```{r, fig.width=30,fig.height=15}
 #dotplots of cluster mean values
-#calculate cluster means for different variables
-c1m <- data.frame(one=colMeans(subset(dat_clust, x=="1")[2:17]))
-c2m <- data.frame(two=colMeans(subset(dat_clust, x=="2")[2:17]))
-c3m <- data.frame(three=colMeans(subset(dat_clust, x=="3")[2:17]))
-c4m <- data.frame(four=colMeans(subset(dat_clust, x=="4")[2:17]))
-c5m <- data.frame(five=colMeans(subset(dat_clust, x=="5")[2:17]))
-c6m <- data.frame(six=colMeans(subset(dat_clust, x=="6")[2:17]))
-c7m <- data.frame(seven=colMeans(subset(dat_clust, x=="7")[2:17]))
-c8m <- data.frame(eight=colMeans(subset(dat_clust, x=="8")[2:17]))
-c9m <- data.frame(nine=colMeans(subset(dat_clust, x=="9")[2:17]))
-c10m <- data.frame(ten=colMeans(subset(dat_clust, x=="10")[2:17]))
-
-cluster_means <- cbind.data.frame(c1m,c2m,c3m,c4m,c5m,c6m,c7m,c8m, c9m, c10m)
-cluster_means$variable <- row.names(cluster_means)
-rownames(cluster_means) <- NULL
-
 par(mfrow=c(2,5))
 dotchart(cluster_means$one, labels=cluster_means$variable,xlim=c(-2,2), main='Cluster 1', pch=16)
 abline(v=0, lwd=2)
@@ -163,8 +167,9 @@ abline(v=0, lwd=2)
 par(mfrow=c(1,1))
 ```
 
+
 # Dimension reduction
-```{r}
+```{r, fig.width=6,fig.height=4}
 #run discriminant analysis on clusters
 DR <- MclustDR(dat_mc10, lambda = 1) #setting lambda to 1 gives most separating directions
 summary(DR)
@@ -172,11 +177,15 @@ summary(DR)
 #plot eigenvalues
 plot(c(1:17),DR$evalues,ylab="eigenvalues", xlab="component", type="o", pch=16)
 
+```
+
+```{r, fig.width=30,fig.height=15}
 #plot all pairs of combinations
 plot(DR, what='pairs',symbols=c("1","2","3","4","5","6","7","8","9","10"),
      colors=c("red","blue","green","goldenrod2","violet","brown","black","grey30","slateblue2","seagreen3"))
+```
 
-
+```{r, fig.width=15,fig.height=10}
 #plot directions for variables
 Directions <- data.frame(d1=DR$basis[,1],d2=DR$basis[,2],
                          d3=DR$basis[,3],d4=DR$basis[,4],
@@ -213,6 +222,5 @@ dotchart(Directions$d9, labels=Directions$var, pch=16, main="Dir9", xlim=c(-0.6,
 abline(v=0, lwd=2)
 abline(v=c(0.1,-0.1),lty=2)
 par(mfrow=c(1,1))
-
 ```
 
