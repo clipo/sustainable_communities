@@ -1,2 +1,3 @@
 # sustainable_communities
-A metric for measuring sustainability at the scale of communities
+
+Gaussian Mixture Modeling for MSA to explore sustainable community types.
