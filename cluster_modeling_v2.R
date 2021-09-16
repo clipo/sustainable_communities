@@ -452,5 +452,3 @@ cluster_sf
 us_map <- tm_shape(us_states) + tm_borders()
 cluster_map <- tm_shape(cluster_sf) + tm_fill(col="Cluster", palette="Spectral")
 us_map + cluster_map
-
-
