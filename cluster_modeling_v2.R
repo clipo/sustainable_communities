@@ -498,6 +498,16 @@ dat_clust_adj$Index_Black <- dat_clust$Index_Black * -1
 dat_clust_adj$Index_Asian <- dat_clust$Index_Asian * -1
 dat_clust_adj$Index_Latino <- dat_clust$Index_Latino * -1
 
+#calculate which are the 'highest scoring' MSAs
+dat_clust_adj_sums <- dat_clust_adj
+dat_clust_adj_sums$Total <- rowSums(dat_clust_adj_sums[2:18])
+#order by Total
+dat_clust_adj_sums <- dat_clust_adj_sums[order(-dat_clust_adj_sums$Total),] 
+best<-head(dat_clust_adj_sums, n=10)
+best<-data.frame(name=best$ME,Total=best$Total)
+best
+
+
 cluster1 <- data.frame(subset(dat_clust_adj, x=="1"))
 cluster2 <- data.frame(subset(dat_clust_adj, x=="2"))
 cluster3 <- data.frame(subset(dat_clust_adj, x=="3"))
@@ -508,6 +518,23 @@ cluster7 <- data.frame(subset(dat_clust_adj, x=="7"))
 cluster8 <- data.frame(subset(dat_clust_adj, x=="8"))
 cluster9 <- data.frame(subset(dat_clust_adj, x=="9"))
 cluster10 <- data.frame(subset(dat_clust_adj, x=="10"))
+
+#### Higest scoring MSAs by cluster
+
+cluster1_best <- cluster1
+cluster1_best$Total <- rowSums(cluster1_best[2:18])
+#order by total
+cluster1_best <- cluster1_best[order(-cluster1_best$Total),] 
+head(cluster1_best[c(1,20)], n=10)
+
+cluster2_best <- cluster2
+cluster2_best$Total <- rowSums(cluster2_best[2:18])
+#order by total
+cluster2_best <- cluster2_best[order(-cluster2_best$Total),] 
+head(cluster2_best[c(1,20)], n=10)
+
+
+
 
 #install PCAtools package
 # library(devtools)
