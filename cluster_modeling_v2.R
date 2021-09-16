@@ -74,7 +74,7 @@ head(dat_clust)
 
 #Poverty, low
 boxplot(dat_clust$Per_Poverty~dat_clust$x, ylab='Poverty %', xlab="Cluster")
-
+abline(h=0)
 #Inequality, low
 boxplot(dat_clust$Gini~dat_clust$x, ylab='Gini', xlab="Cluster")
 
@@ -94,29 +94,29 @@ boxplot(dat_clust$VIO_CRIME~dat_clust$x, ylab="Violent Crime", xlab="Cluster")
 #plot subsets
 
 par(mfrow=c(2,5), mar=c(2.5,5,2.5,3))
-boxplot(subset(dat_clust, x=="1")[2:17], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 1")
-boxplot(subset(dat_clust, x=="2")[2:17], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 2")
-boxplot(subset(dat_clust, x=="3")[2:17], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 3")
-boxplot(subset(dat_clust, x=="4")[2:17], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 4")
-boxplot(subset(dat_clust, x=="5")[2:17], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 5")
-boxplot(subset(dat_clust, x=="6")[2:17], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 6")
-boxplot(subset(dat_clust, x=="7")[2:17], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 7")
-boxplot(subset(dat_clust, x=="8")[2:17], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 8")
-boxplot(subset(dat_clust, x=="9")[2:17], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 9")
-boxplot(subset(dat_clust, x=="10")[2:17], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 10")
+boxplot(subset(dat_clust, x=="1")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 1")
+boxplot(subset(dat_clust, x=="2")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 2")
+boxplot(subset(dat_clust, x=="3")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 3")
+boxplot(subset(dat_clust, x=="4")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 4")
+boxplot(subset(dat_clust, x=="5")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 5")
+boxplot(subset(dat_clust, x=="6")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 6")
+boxplot(subset(dat_clust, x=="7")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 7")
+boxplot(subset(dat_clust, x=="8")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 8")
+boxplot(subset(dat_clust, x=="9")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 9")
+boxplot(subset(dat_clust, x=="10")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 10")
 par(mfrow=c(1,1))
 
 #calculate cluster means for different variables
-c1m <- data.frame(one=colMeans(subset(dat_clust, x=="1")[2:17]))
-c2m <- data.frame(two=colMeans(subset(dat_clust, x=="2")[2:17]))
-c3m <- data.frame(three=colMeans(subset(dat_clust, x=="3")[2:17]))
-c4m <- data.frame(four=colMeans(subset(dat_clust, x=="4")[2:17]))
-c5m <- data.frame(five=colMeans(subset(dat_clust, x=="5")[2:17]))
-c6m <- data.frame(six=colMeans(subset(dat_clust, x=="6")[2:17]))
-c7m <- data.frame(seven=colMeans(subset(dat_clust, x=="7")[2:17]))
-c8m <- data.frame(eight=colMeans(subset(dat_clust, x=="8")[2:17]))
-c9m <- data.frame(nine=colMeans(subset(dat_clust, x=="9")[2:17]))
-c10m <- data.frame(ten=colMeans(subset(dat_clust, x=="10")[2:17]))
+c1m <- data.frame(one=colMeans(subset(dat_clust, x=="1")[2:18]))
+c2m <- data.frame(two=colMeans(subset(dat_clust, x=="2")[2:18]))
+c3m <- data.frame(three=colMeans(subset(dat_clust, x=="3")[2:18]))
+c4m <- data.frame(four=colMeans(subset(dat_clust, x=="4")[2:18]))
+c5m <- data.frame(five=colMeans(subset(dat_clust, x=="5")[2:18]))
+c6m <- data.frame(six=colMeans(subset(dat_clust, x=="6")[2:18]))
+c7m <- data.frame(seven=colMeans(subset(dat_clust, x=="7")[2:18]))
+c8m <- data.frame(eight=colMeans(subset(dat_clust, x=="8")[2:18]))
+c9m <- data.frame(nine=colMeans(subset(dat_clust, x=="9")[2:18]))
+c10m <- data.frame(ten=colMeans(subset(dat_clust, x=="10")[2:18]))
 
 cluster_means <- cbind.data.frame(c1m,c2m,c3m,c4m,c5m,c6m,c7m,c8m, c9m, c10m)
 cluster_means$variable <- row.names(cluster_means)
@@ -145,6 +145,10 @@ dotchart(cluster_means$ten, labels=cluster_means$variable,xlim=c(-2,2), main='Cl
 abline(v=0, lwd=2)
 par(mfrow=c(1,1))
 
+
+##########################
+#Most sustainable cluster
+
 #rotate columns and rows
 cluster_means_t <- cluster_means[1:10]
 row.names(cluster_means_t) <- cluster_means$variable
@@ -153,9 +157,154 @@ cluster_means_t$cluster <- row.names(cluster_means_t)
 row.names(cluster_means_t) <- NULL
 cluster_means_t
 
-dotchart(cluster_means_t[,1], labels=cluster_means_t$cluster)
+#clusters scoring the best in the different metrics
+best_air <- cluster_means_t[which.max(cluster_means_t$AQI_Good),]
+best_edu <- cluster_means_t[which.max(cluster_means_t$Bachelor_Over_25),]
+best_pov <- cluster_means_t[which.min(cluster_means_t$Per_Poverty),]
+best_ineq <- cluster_means_t[which.min(cluster_means_t$Gini),]
+best_hous <- cluster_means_t[which.min(cluster_means_t$Per_Sev_Hous),]
+best_stream <- cluster_means_t[which.min(cluster_means_t$Xstreamlengthimpaired),]
+best_land <- cluster_means_t[which.max(cluster_means_t$Per_Avg_Land_Cov),]
+best_health <- cluster_means_t[which.min(cluster_means_t$poor_health_percent),]
+best_water <- cluster_means_t[which.min(cluster_means_t$Z_Water_Index),]
+low_index_black <- cluster_means_t[which.min(cluster_means_t$Index_Black),]
+low_index_asian <- cluster_means_t[which.min(cluster_means_t$Index_Asian),]
+low_index_latino <- cluster_means_t[which.min(cluster_means_t$Index_Latino),]
 
+#clusters scoring the worst in different metrics
+
+#most sustainable MSAs
+
+MSA_best_air <- dat_clust[which.max(dat_clust$AQI_Good),]
+MSA_best_edu <- dat_clust[which.max(dat_clust$Bachelor_Over_25),]
+MSA_best_pov <- dat_clust[which.min(dat_clust$Per_Poverty),]
+MSA_best_ineq <- dat_clust[which.min(dat_clust$Gini),]
+MSA_best_hous <- dat_clust[which.min(dat_clust$Per_Sev_Hous),]
+MSA_best_stream <- dat_clust[which.min(dat_clust$Xstreamlengthimpaired),]
+MSA_best_land <- dat_clust[which.max(dat_clust$Per_Avg_Land_Cov),]
+MSA_best_health <- dat_clust[which.min(dat_clust$poor_health_percent),]
+MSA_best_water <- dat_clust[which.min(dat_clust$Z_Water_Index),]
+MSA_low_index_black <- dat_clust[which.min(dat_clust$Index_Black),]
+MSA_low_index_asian <- dat_clust[which.min(dat_clust$Index_Asian),]
+MSA_low_index_latino <- dat_clust[which.min(dat_clust$Index_Latino),]
+
+
+#most sustainable MSAs in each cluster
+cluster1 <- data.frame(subset(dat_clust, x=="1"))
+cluster2 <- data.frame(subset(dat_clust, x=="2"))
+cluster3 <- data.frame(subset(dat_clust, x=="3"))
+cluster4 <- data.frame(subset(dat_clust, x=="4"))
+cluster5 <- data.frame(subset(dat_clust, x=="5"))
+cluster6 <- data.frame(subset(dat_clust, x=="6"))
+cluster7 <- data.frame(subset(dat_clust, x=="7"))
+cluster8 <- data.frame(subset(dat_clust, x=="8"))
+cluster9 <- data.frame(subset(dat_clust, x=="9"))
+cluster10 <- data.frame(subset(dat_clust, x=="10"))
+
+# best scoring MSAs by cluster
+# c1_best_air <- cluster1[which.max(cluster1$AQI_Good),]
+# c1_best_edu <- cluster1[which.max(cluster1$Bachelor_Over_25),]
+# c1_best_pov <- cluster1[which.min(cluster1$Per_Poverty),]
+# c1_best_ineq <- cluster1[which.min(cluster1$Gini),]
+# c1_best_hous <- cluster1[which.min(cluster1$Per_Sev_Hous),]
+# c1_best_stream <- cluster1[which.min(cluster1$Xstreamlengthimpaired),]
+# c1_best_land <- cluster1[which.max(cluster1$Per_Avg_Land_Cov),]
+# c1_best_health <- cluster1[which.min(cluster1$poor_health_percent),]
+# c1_best_water <- cluster1[which.min(cluster1$Z_Water_Index),]
+# c1_low_index_black <- cluster1[which.min(cluster1$Index_Black),]
+# c1_low_index_asian <- cluster1[which.min(cluster1$Index_Asian),]
+# c1_low_index_latino <- cluster1[which.min(cluster1$Index_Latino),]
+
+##############################
+# adjust values for variables so that high=good and low=bad for all variables
+
+dat_clust_adj <- dat_clust
+dat_clust_adj$Per_Poverty <- dat_clust$Per_Poverty * -1
+dat_clust_adj$Gini <- dat_clust$Gini * -1
+dat_clust_adj$Per_Sev_Hous <- dat_clust$Per_Sev_Hous * -1
+dat_clust_adj$Xstreamlengthimpaired <- dat_clust$Xstreamlengthimpaired * -1
+dat_clust_adj$poor_health_percent <- dat_clust$poor_health_percent * -1
+dat_clust_adj$Z_Water_Index <- dat_clust$Z_Water_Index * -1
+dat_clust_adj$Index_Black <- dat_clust$Index_Black * -1
+dat_clust_adj$Index_Asian <- dat_clust$Index_Asian * -1
+dat_clust_adj$Index_Latino <- dat_clust$Index_Latino * -1
+
+cluster1 <- data.frame(subset(dat_clust_adj, x=="1"))
+cluster2 <- data.frame(subset(dat_clust_adj, x=="2"))
+cluster3 <- data.frame(subset(dat_clust_adj, x=="3"))
+cluster4 <- data.frame(subset(dat_clust_adj, x=="4"))
+cluster5 <- data.frame(subset(dat_clust_adj, x=="5"))
+cluster6 <- data.frame(subset(dat_clust_adj, x=="6"))
+cluster7 <- data.frame(subset(dat_clust_adj, x=="7"))
+cluster8 <- data.frame(subset(dat_clust_adj, x=="8"))
+cluster9 <- data.frame(subset(dat_clust_adj, x=="9"))
+cluster10 <- data.frame(subset(dat_clust_adj, x=="10"))
+
+#install PCAtools package
+# if (!requireNamespace("BiocManager", quietly = TRUE))
+#   install.packages("BiocManager")
+# 
+# BiocManager::install("PCAtools")
+library(PCAtools)
+
+
+#PCA cluster 1
+c1_PCA <- princomp(cluster1[2:18])
+plot(c1_PCA)
+biplot(c1_PCA, main='Cluster 1')
+abline(h=0, lty=2)
+abline(v=0, lty=2)
+pairsplot(c1_PCA)
+
+#PCA cluster 2
+c2_PCA <- princomp(cluster2[2:18])
+plot(c2_PCA)
+biplot(c2_PCA)
+
+#PCA cluster 3
+c3_PCA <- princomp(cluster3[2:18])
+plot(c3_PCA)
+biplot(c3_PCA)
+
+#PCA cluster 4
+c4_PCA <- princomp(cluster4[2:18])
+plot(c4_PCA)
+biplot(c4_PCA)
+
+#PCA cluster 5
+c5_PCA <- princomp(cluster5[2:18])
+plot(c5_PCA)
+biplot(c5_PCA)
+
+#PCA cluster 6
+c6_PCA <- princomp(cluster6[2:18])
+plot(c6_PCA)
+biplot(c6_PCA)
+
+#PCA cluster 7
+c7_PCA <- princomp(cluster7[2:18])
+plot(c7_PCA)
+biplot(c7_PCA)
+
+#PCA cluster 8
+c8_PCA <- princomp(cluster8[2:18])
+plot(c8_PCA)
+biplot(c8_PCA)
+
+#PCA cluster 9
+c9_PCA <- princomp(cluster9[2:18])
+plot(c9_PCA)
+biplot(c9_PCA)
+
+#PCA cluster 10
+c10_PCA <- princomp(cluster10[2:18])
+plot(c10_PCA)
+biplot(c10_PCA)
+
+
+####################################
 #dimension reduction
+########################################
 DR <- MclustDR(dat_mc10, lambda = 1) #setting lambda to 1 gives most separating directions
 summary(DR)
 
