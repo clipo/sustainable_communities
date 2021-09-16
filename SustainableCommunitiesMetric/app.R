@@ -19,7 +19,7 @@ data<-read.csv("cluster_assignment.csv")
 merged <- merge(msa_Boundary,data,by.x="NAME",by.y="X")
 pal <- colorFactor(rainbow(10), merged$x,
                    na.color = "transparent")
-p_popup <- paste0("<strong>MSA: </strong>", merged$NAME)
+p_popup <- paste0("<strong>Community: </strong>", merged$NAME)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -35,7 +35,9 @@ server <- function(input, output, session) {
         fillColor = ~pal(x), # set fill color with function from above and value
         fillOpacity = 0.8, smoothFactor = 0.5, # make it nicer
         popup = p_popup) %>%
-      addTiles()
+      addTiles() %>%
+      addLegend("bottomleft",pal = pal, values = c(1,2,3,4,5,6,7,8,9,10), 
+                layerId = "colorLegend", title="Cluster")
   })
 }
 
