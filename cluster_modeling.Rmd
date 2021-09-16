@@ -1,7 +1,7 @@
 ---
 title: "MSA Cluster Modeling"
 author: "Robert J. DiNapoli"
-date: "9/15/2021"
+date: "9/16/2021"
 output: html_document
 ---
 
@@ -11,18 +11,24 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Load Packages
 
-```{r}
+```{r, results='hide', message=FALSE}
 library(here)
 library(mclust)
 library(raster)
 library(rgdal)
 library(sp)
 library(RColorBrewer)
+library(PCAtools)
+library(sf)
+library(tmap)
+library(terra)
+library(rgeos)
+library(spData)
 library(knitr)
 ```
 
 # Import Data
-```{r}
+```{r, results='hide', message=FALSE}
 
 #import raw data
 dat_raw <- read.csv(here("data/CommunityData-raw-2015.csv"))
@@ -32,9 +38,6 @@ dat  <- dat_raw[,c(4:12,14:21)]
 dat <- as.data.frame(unclass(dat))
 #set rownames to city names
 rownames(dat)=dat_raw$ME
-#look at data
-summary(dat)
-head(dat)
 # remove any records that have NAs
 dat = na.omit(dat)
 # convert to z-scores
@@ -87,20 +90,26 @@ kable(results_table[1:4], caption = "Model Comparison")
 write.csv(dat_mc10$classification,file=here("results/cluster_assignment.csv"))
 data<-read.csv("results/cluster_assignment.csv")
 
-#import MSA boundaries shapefile
+#import shapefile
 msa_Boundary <-readOGR(here("data/MSA"),"tl_2015_us_cbsa") 
-#merge polygons with cluster IDs
+#merge them
 merged <- merge(msa_Boundary,data,by.x="NAME",by.y="X")
 #remove any cases MSAs with no cluster assignments
 merged_clean <- merged[!is.na(merged$x),]
-#convert cluster ID to factor
-merged_clean$x_f <- as.factor(merged_clean$x)
-#plot
-spplot(merged_clean, "x_f", col.regions=brewer.pal(10,'Spectral'))
+#convert x to factor
+merged_clean$Cluster <- as.factor(merged_clean$x)
+#convert to sf object
+cluster_sf <- st_as_sf(merged_clean)
+#make us map
+us_map <- tm_shape(us_states) + tm_borders()
+#combine them
+cluster_map <- tm_shape(cluster_sf) + tm_fill(col="Cluster", palette="Spectral")
+#plot them
+us_map + cluster_map
 ```
 
 # Examine how clusters score in different metrics
-```{r}
+```{r, results='hide',message=FALSE}
 #new data frame
 dat_clust <- as.data.frame(dat)
 #add names
@@ -108,18 +117,17 @@ dat_clust$ME <- rownames(dat)
 rownames(dat_clust) <- NULL
 #merge in cluster assignments
 dat_clust <- merge(dat_clust,data,by.x="ME",by.y="X")
-
 #calculate cluster means for different variables
-c1m <- data.frame(one=colMeans(subset(dat_clust, x=="1")[2:17]))
-c2m <- data.frame(two=colMeans(subset(dat_clust, x=="2")[2:17]))
-c3m <- data.frame(three=colMeans(subset(dat_clust, x=="3")[2:17]))
-c4m <- data.frame(four=colMeans(subset(dat_clust, x=="4")[2:17]))
-c5m <- data.frame(five=colMeans(subset(dat_clust, x=="5")[2:17]))
-c6m <- data.frame(six=colMeans(subset(dat_clust, x=="6")[2:17]))
-c7m <- data.frame(seven=colMeans(subset(dat_clust, x=="7")[2:17]))
-c8m <- data.frame(eight=colMeans(subset(dat_clust, x=="8")[2:17]))
-c9m <- data.frame(nine=colMeans(subset(dat_clust, x=="9")[2:17]))
-c10m <- data.frame(ten=colMeans(subset(dat_clust, x=="10")[2:17]))
+c1m <- data.frame(one=colMeans(subset(dat_clust, x=="1")[2:18]))
+c2m <- data.frame(two=colMeans(subset(dat_clust, x=="2")[2:18]))
+c3m <- data.frame(three=colMeans(subset(dat_clust, x=="3")[2:18]))
+c4m <- data.frame(four=colMeans(subset(dat_clust, x=="4")[2:18]))
+c5m <- data.frame(five=colMeans(subset(dat_clust, x=="5")[2:18]))
+c6m <- data.frame(six=colMeans(subset(dat_clust, x=="6")[2:18]))
+c7m <- data.frame(seven=colMeans(subset(dat_clust, x=="7")[2:18]))
+c8m <- data.frame(eight=colMeans(subset(dat_clust, x=="8")[2:18]))
+c9m <- data.frame(nine=colMeans(subset(dat_clust, x=="9")[2:18]))
+c10m <- data.frame(ten=colMeans(subset(dat_clust, x=="10")[2:18]))
 cluster_means <- cbind.data.frame(c1m,c2m,c3m,c4m,c5m,c6m,c7m,c8m, c9m, c10m)
 cluster_means$variable <- row.names(cluster_means)
 rownames(cluster_means) <- NULL
@@ -128,16 +136,16 @@ rownames(cluster_means) <- NULL
 ```{r, fig.width=30,fig.height=15}
 #boxplots of scores for clusters
 par(mfrow=c(2,5), mar=c(2.5,5,2.5,3))
-boxplot(subset(dat_clust, x=="1")[2:17], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 1")
-boxplot(subset(dat_clust, x=="2")[2:17], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 2")
-boxplot(subset(dat_clust, x=="3")[2:17], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 3")
-boxplot(subset(dat_clust, x=="4")[2:17], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 4")
-boxplot(subset(dat_clust, x=="5")[2:17], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 5")
-boxplot(subset(dat_clust, x=="6")[2:17], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 6")
-boxplot(subset(dat_clust, x=="7")[2:17], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 7")
-boxplot(subset(dat_clust, x=="8")[2:17], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 8")
-boxplot(subset(dat_clust, x=="9")[2:17], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 9")
-boxplot(subset(dat_clust, x=="10")[2:17], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 10")
+boxplot(subset(dat_clust, x=="1")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 1")
+boxplot(subset(dat_clust, x=="2")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 2")
+boxplot(subset(dat_clust, x=="3")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 3")
+boxplot(subset(dat_clust, x=="4")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 4")
+boxplot(subset(dat_clust, x=="5")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 5")
+boxplot(subset(dat_clust, x=="6")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 6")
+boxplot(subset(dat_clust, x=="7")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 7")
+boxplot(subset(dat_clust, x=="8")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 8")
+boxplot(subset(dat_clust, x=="9")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 9")
+boxplot(subset(dat_clust, x=="10")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 10")
 par(mfrow=c(1,1))
 ```
 
@@ -166,6 +174,113 @@ dotchart(cluster_means$ten, labels=cluster_means$variable,xlim=c(-2,2), main='Cl
 abline(v=0, lwd=2)
 par(mfrow=c(1,1))
 ```
+# Examine cluster patterns with PCA
+
+## Note: adjusting values for variables so that high='good' and low='bad' for all variables
+```{r}
+dat_clust_adj <- dat_clust
+dat_clust_adj$Per_Poverty <- dat_clust$Per_Poverty * -1
+dat_clust_adj$Gini <- dat_clust$Gini * -1
+dat_clust_adj$Per_Sev_Hous <- dat_clust$Per_Sev_Hous * -1
+dat_clust_adj$Xstreamlengthimpaired <- dat_clust$Xstreamlengthimpaired * -1
+dat_clust_adj$poor_health_percent <- dat_clust$poor_health_percent * -1
+dat_clust_adj$Z_Water_Index <- dat_clust$Z_Water_Index * -1
+dat_clust_adj$Index_Black <- dat_clust$Index_Black * -1
+dat_clust_adj$Index_Asian <- dat_clust$Index_Asian * -1
+dat_clust_adj$Index_Latino <- dat_clust$Index_Latino * -1
+
+cluster1 <- data.frame(subset(dat_clust_adj, x=="1"))
+cluster2 <- data.frame(subset(dat_clust_adj, x=="2"))
+cluster3 <- data.frame(subset(dat_clust_adj, x=="3"))
+cluster4 <- data.frame(subset(dat_clust_adj, x=="4"))
+cluster5 <- data.frame(subset(dat_clust_adj, x=="5"))
+cluster6 <- data.frame(subset(dat_clust_adj, x=="6"))
+cluster7 <- data.frame(subset(dat_clust_adj, x=="7"))
+cluster8 <- data.frame(subset(dat_clust_adj, x=="8"))
+cluster9 <- data.frame(subset(dat_clust_adj, x=="9"))
+cluster10 <- data.frame(subset(dat_clust_adj, x=="10"))
+```
+
+## Perform PCA on individual clusters
+
+```{r,fig.width=12,fig.height=8}
+#PCA cluster 1
+c1_PCA <- pca(cluster1[2:18],transposed = T) #rotate table and only use numeric columns
+#scree plot
+screeplot(c1_PCA, title="Scree plot Cluster 1") 
+#elbow method of estimating important components
+findElbowPoint(c1_PCA$variance) 
+#biplot for PC1 and PC2
+biplot(c1_PCA, showLoadings = T, showLoadingsNames = T, hline=0,vline=0, title='Cluster 1')
+#loadings for components
+plotloadings(c1_PCA, title="Cluster 1")
+```
+
+```{r, fig.width=12, fig.height=8}
+#PCA cluster 2
+c2_PCA <- pca(cluster2[2:18],transposed = T)
+screeplot(c2_PCA)
+findElbowPoint(c2_PCA$variance)
+biplot(c2_PCA, showLoadings = T, showLoadingsNames = T, hline=0,vline=0, title='Cluster 2')
+plotloadings(c2_PCA, title="Cluster 2")
+
+#PCA cluster 3
+c3_PCA <- pca(cluster3[2:18],transposed = T)
+screeplot(c3_PCA)
+findElbowPoint(c3_PCA$variance)
+biplot(c3_PCA, showLoadings = T, showLoadingsNames = T, hline=0,vline=0, title='Cluster 3')
+plotloadings(c3_PCA, title="Cluster 3")
+
+#PCA cluster 4
+c4_PCA <- pca(cluster4[2:18],transposed = T)
+screeplot(c4_PCA)
+findElbowPoint(c4_PCA$variance)
+biplot(c4_PCA, showLoadings = T, showLoadingsNames = T, hline=0,vline=0, title='Cluster 4')
+plotloadings(c4_PCA, title="Cluster 4")
+
+#PCA cluster 5
+c5_PCA <- pca(cluster5[2:18],transposed = T)
+screeplot(c5_PCA)
+findElbowPoint(c5_PCA$variance)
+biplot(c5_PCA, showLoadings = T, showLoadingsNames = T, hline=0,vline=0, title='Cluster 5')
+plotloadings(c5_PCA, title="Cluster 5")
+
+#PCA cluster 6
+c6_PCA <- pca(cluster6[2:18],transposed = T)
+screeplot(c6_PCA)
+findElbowPoint(c6_PCA$variance)
+biplot(c6_PCA, showLoadings = T, showLoadingsNames = T, hline=0,vline=0, title='Cluster 6')
+plotloadings(c6_PCA, title="Cluster 6")
+
+#PCA cluster 7
+c7_PCA <- pca(cluster7[2:18],transposed = T)
+screeplot(c7_PCA)
+findElbowPoint(c7_PCA$variance)
+biplot(c7_PCA, showLoadings = T, showLoadingsNames = T, hline=0,vline=0, title='Cluster 7')
+plotloadings(c7_PCA, title="Cluster 7")
+
+#PCA cluster 8
+c8_PCA <- pca(cluster8[2:18],transposed = T)
+screeplot(c8_PCA)
+findElbowPoint(c8_PCA$variance)
+biplot(c8_PCA, showLoadings = T, showLoadingsNames = T, hline=0,vline=0, title='Cluster 8')
+plotloadings(c8_PCA, title="Cluster 8")
+
+#PCA cluster 9
+c9_PCA <- pca(cluster9[2:18],transposed = T)
+screeplot(c9_PCA)
+findElbowPoint(c9_PCA$variance)
+biplot(c9_PCA, showLoadings = T, showLoadingsNames = T, hline=0,vline=0, title='Cluster 9')
+plotloadings(c9_PCA, title="Cluster 9")
+
+#PCA cluster 10
+c10_PCA <- pca(cluster10[2:18],transposed = T)
+screeplot(c10_PCA)
+findElbowPoint(c10_PCA$variance)
+biplot(c10_PCA, showLoadings = T, showLoadingsNames = T, hline=0,vline=0, title='Cluster 10')
+plotloadings(c10_PCA, title="Cluster 10")
+```
+
 
 
 # Dimension reduction
