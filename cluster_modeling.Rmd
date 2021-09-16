@@ -45,6 +45,13 @@ dat <- as.matrix(scale(dat, center = TRUE, scale = TRUE))
 ```
 
 # Run Cluster GMM
+
+Assumptions: - MSAs form clusters characterized by a multivariate distribution
+             - Model forms: shape, volume, orientation
+             - GMM fits a series of models with different forms and numbers of clusters
+             - Models with highest probability and fewest parameters selected as most optimal
+               - Based on Bayesian Information Criterion (BIC)
+
 ```{r}
 #run mclust on 1 to 20 clusters
 dat_mc <- Mclust(dat, G=c(1:20))
@@ -409,6 +416,59 @@ typical_members <- data.frame(Cluster=c(1:10), Name=c(cluster1_average$Name,
                               cluster9_average$Name,
                               cluster10_average$Name))
 kable(typical_members, caption = "Typical members of each cluster")
+```
+
+# Which cluster scores the best on the different metrics?
+```{r, echo=F}
+##########################
+#Most sustainable cluster
+
+#rotate columns and rows
+cluster_means_t <- cluster_means[1:10]
+row.names(cluster_means_t) <- cluster_means$variable
+cluster_means_t <- data.frame(t(cluster_means_t))
+cluster_means_t$cluster <- row.names(cluster_means_t)
+row.names(cluster_means_t) <- NULL
+
+#clusters scoring the best in the different metrics
+best_air <- cluster_means_t[which.max(cluster_means_t$AQI_Good),]
+best_edu <- cluster_means_t[which.max(cluster_means_t$Bachelor_Over_25),]
+best_pov <- cluster_means_t[which.min(cluster_means_t$Per_Poverty),]
+best_ineq <- cluster_means_t[which.min(cluster_means_t$Gini),]
+best_hous <- cluster_means_t[which.min(cluster_means_t$Per_Sev_Hous),]
+best_stream <- cluster_means_t[which.min(cluster_means_t$Xstreamlengthimpaired),]
+best_land <- cluster_means_t[which.max(cluster_means_t$Per_Avg_Land_Cov),]
+best_health <- cluster_means_t[which.min(cluster_means_t$poor_health_percent),]
+best_water <- cluster_means_t[which.min(cluster_means_t$Z_Water_Index),]
+low_index_black <- cluster_means_t[which.min(cluster_means_t$Index_Black),]
+low_index_asian <- cluster_means_t[which.min(cluster_means_t$Index_Asian),]
+low_index_latino <- cluster_means_t[which.min(cluster_means_t$Index_Latino),]
+best_emissions <- cluster_means_t[which.min(cluster_means_t$GHG_Percap),]
+best_employmet <- cluster_means_t[which.min(cluster_means_t$UNEMPLOY),]
+best_food <- cluster_means_t[which.min(cluster_means_t$FOOD_INS),]
+best_crime <- cluster_means_t[which.min(cluster_means_t$VIO_CRIME),]
+
+
+most_sustainable_clusters <- data.frame(Metric=c(colnames(cluster_means_t[c(1:4,6:17)])),
+                                        Cluster=c(
+                                        best_air$cluster,
+                                        best_edu$cluster,
+                                        best_pov$cluster,
+                                        best_ineq$cluster,
+                                        best_hous$cluster,
+                                        best_stream$cluster,
+                                        best_land$cluster,
+                                        best_health$cluster,
+                                        best_water$cluster,
+                                        low_index_black$cluster,
+                                        low_index_asian$cluster,
+                                        low_index_latino$cluster,
+                                        best_emissions$cluster,
+                                        best_employmet$cluster,
+                                        best_food$cluster,
+                                        best_crime$cluster))
+
+kable(most_sustainable_clusters)
 ```
 
 

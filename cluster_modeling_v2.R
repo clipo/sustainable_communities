@@ -179,19 +179,33 @@ best_water <- cluster_means_t[which.min(cluster_means_t$Z_Water_Index),]
 low_index_black <- cluster_means_t[which.min(cluster_means_t$Index_Black),]
 low_index_asian <- cluster_means_t[which.min(cluster_means_t$Index_Asian),]
 low_index_latino <- cluster_means_t[which.min(cluster_means_t$Index_Latino),]
+best_emissions <- cluster_means_t[which.min(cluster_means_t$GHG_Percap),]
+best_employmet <- cluster_means_t[which.min(cluster_means_t$UNEMPLOY),]
+best_food <- cluster_means_t[which.min(cluster_means_t$FOOD_INS),]
+best_crime <- cluster_means_t[which.min(cluster_means_t$VIO_CRIME),]
 
-best_air$cluster
-best_edu$cluster
-best_pov$cluster
-best_ineq$cluster
-best_hous$cluster
-best_stream$cluster
-best_land$cluster
-best_health$cluster
-best_water$cluster
-low_index_black$cluster 
-low_index_asian$cluster
-low_index_latino$cluster
+
+most_sustainable_clusters <- data.frame(Metric=c(colnames(cluster_means_t[c(1:4,6:17)])),
+                                        Cluster=c(
+                                        best_air$cluster,
+                                        best_edu$cluster,
+                                        best_pov$cluster,
+                                        best_ineq$cluster,
+                                        best_hous$cluster,
+                                        best_stream$cluster,
+                                        best_land$cluster,
+                                        best_health$cluster,
+                                        best_water$cluster,
+                                        low_index_black$cluster,
+                                        low_index_asian$cluster,
+                                        low_index_latino$cluster,
+                                        best_emissions$cluster,
+                                        best_employmet$cluster,
+                                        best_food$cluster,
+                                        best_crime$cluster))
+
+most_sustainable_clusters
+
 #clusters scoring the worst in different metrics
 
 #most sustainable MSAs
