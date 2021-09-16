@@ -19,7 +19,7 @@ data<-read.csv("cluster_assignment.csv")
 merged <- merge(msa_Boundary,data,by.x="NAME",by.y="X")
 pal <- colorFactor(rainbow(10), merged$x,
                    na.color = "transparent")
-p_popup <- paste0("<strong>MSA: </strong>", merged$NAME)
+p_popup <- paste0("<strong>Community: </strong>", merged$NAME)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
