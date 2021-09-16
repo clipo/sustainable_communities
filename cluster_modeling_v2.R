@@ -413,35 +413,3 @@ us_map <- tm_shape(us_states) + tm_borders()
 cluster_map <- tm_shape(cluster_sf) + tm_fill(col="Cluster", palette="Spectral")
 us_map + cluster_map
 
-
-
-#
-library("RCurl")
-library(RCurl)
-URL <- "https://www2.census.gov/geo/tiger/TIGER2018/CBSA/tl_2018_us_cbsa.zip"
-download.file(URL,destfile="data/MSA/MSA.zip",method="libcurl")
-unzip(here("data/MSA/MSA.zip"))
-msa_Boundary <-readOGR(here("data/MSA"),"tl_2018_us_cbsa") 
-merged <- merge(msa_Boundary,data,by.x="NAME",by.y="X")
-spplot(merged,"x")
-
-library(leaflet) 
-leaflet(merged) %>%
-  addPolygons()
-
-library(leaflet) 
-pal <- colorFactor(rainbow(8), merged$x,
-                   na.color = "transparent")
-p_popup <- paste0("<strong>MSA: </strong>", merged$NAME)
-
-leaflet(merged) %>%
-  addPolygons(
-    stroke = FALSE, # remove polygon borders
-    fillColor = ~pal(x), # set fill color with function from above and value
-    fillOpacity = 0.8, smoothFactor = 0.5, # make it nicer
-    popup = p_popup) %>%
-  addTiles() %>%
-  addLegend("bottomright",  # location
-            pal=pal,    # palette function
-            values=~x,  # value to be passed to palette function
-            title = 'Cluster') # legend title
