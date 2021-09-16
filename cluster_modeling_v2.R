@@ -237,13 +237,236 @@ cluster10 <- data.frame(subset(dat_clust, x=="10"))
 # c1_low_index_latino <- cluster1[which.min(cluster1$Index_Latino),]
 
 #MSAs most like their average values
+c1_diffs = data.frame(Name=cluster1$ME,
+                      air=abs(cluster1$AQI_Good - mean(cluster1$AQI_Good)),
+                      edu=abs(cluster1$Bachelor_Over_25 - mean(cluster1$Bachelor_Over_25)),
+                      pov=abs(cluster1$Per_Poverty - mean(cluster1$Per_Poverty)),
+                      ineq=abs(cluster1$Gini - mean(cluster1$Gini)),
+                      migration=abs(cluster1$non_migration - mean(cluster1$non_migration)),
+                      hous=abs(cluster1$Per_Sev_Hous - mean(cluster1$Per_Sev_Hous)),
+                      stream=abs(cluster1$Xstreamlengthimpaired - mean(cluster1$Xstreamlengthimpaired)),
+                      land=abs(cluster1$Per_Avg_Land_Cov - mean(cluster1$Per_Avg_Land_Cov)),
+                      health=abs(cluster1$poor_health_percent - mean(cluster1$poor_health_percent)),
+                      water=abs(cluster1$Z_Water_Index - mean(cluster1$Z_Water_Index)),
+                      i_black=abs(cluster1$Index_Black - mean(cluster1$Index_Black)),
+                      i_asian=abs(cluster1$Index_Asian - mean(cluster1$Index_Asian)),
+                      i_latino=abs(cluster1$Index_Latino - mean(cluster1$Index_Latino)),
+                      GHG=abs(cluster1$GHG_Percap - mean(cluster1$GHG_Percap)),
+                      unemploy=abs(cluster1$UNEMPLOY - mean(cluster1$UNEMPLOY)),
+                      food=abs(cluster1$FOOD_INS - mean(cluster1$FOOD_INS)),
+                      crime=abs(cluster1$VIO_CRIME - mean(cluster1$VIO_CRIME)))
+c1_diffs$s_diff <- rowSums(c1_diffs[2:ncol(c1_diffs)])
+cluster1_average <- c1_diffs[which.min(c1_diffs$s_diff),]
+cluster1_average
 
+c2_diffs = data.frame(Name=cluster2$ME,
+                      air=abs(cluster2$AQI_Good - mean(cluster2$AQI_Good)),
+                      edu=abs(cluster2$Bachelor_Over_25 - mean(cluster2$Bachelor_Over_25)),
+                      pov=abs(cluster2$Per_Poverty - mean(cluster2$Per_Poverty)),
+                      ineq=abs(cluster2$Gini - mean(cluster2$Gini)),
+                      migration=abs(cluster2$non_migration - mean(cluster2$non_migration)),
+                      hous=abs(cluster2$Per_Sev_Hous - mean(cluster2$Per_Sev_Hous)),
+                      stream=abs(cluster2$Xstreamlengthimpaired - mean(cluster2$Xstreamlengthimpaired)),
+                      land=abs(cluster2$Per_Avg_Land_Cov - mean(cluster2$Per_Avg_Land_Cov)),
+                      health=abs(cluster2$poor_health_percent - mean(cluster2$poor_health_percent)),
+                      water=abs(cluster2$Z_Water_Index - mean(cluster2$Z_Water_Index)),
+                      i_black=abs(cluster2$Index_Black - mean(cluster2$Index_Black)),
+                      i_asian=abs(cluster2$Index_Asian - mean(cluster2$Index_Asian)),
+                      i_latino=abs(cluster2$Index_Latino - mean(cluster2$Index_Latino)),
+                      GHG=abs(cluster2$GHG_Percap - mean(cluster2$GHG_Percap)),
+                      unemploy=abs(cluster2$UNEMPLOY - mean(cluster2$UNEMPLOY)),
+                      food=abs(cluster2$FOOD_INS - mean(cluster2$FOOD_INS)),
+                      crime=abs(cluster2$VIO_CRIME - mean(cluster2$VIO_CRIME)))
+c2_diffs$s_diff <- rowSums(c2_diffs[2:ncol(c2_diffs)])
+cluster2_average <- c2_diffs[which.min(c2_diffs$s_diff),]
+cluster2_average
 
+c3_diffs = data.frame(Name=cluster3$ME,
+                      air=abs(cluster3$AQI_Good - mean(cluster3$AQI_Good)),
+                      edu=abs(cluster3$Bachelor_Over_25 - mean(cluster3$Bachelor_Over_25)),
+                      pov=abs(cluster3$Per_Poverty - mean(cluster3$Per_Poverty)),
+                      ineq=abs(cluster3$Gini - mean(cluster3$Gini)),
+                      migration=abs(cluster3$non_migration - mean(cluster3$non_migration)),
+                      hous=abs(cluster3$Per_Sev_Hous - mean(cluster3$Per_Sev_Hous)),
+                      stream=abs(cluster3$Xstreamlengthimpaired - mean(cluster3$Xstreamlengthimpaired)),
+                      land=abs(cluster3$Per_Avg_Land_Cov - mean(cluster3$Per_Avg_Land_Cov)),
+                      health=abs(cluster3$poor_health_percent - mean(cluster3$poor_health_percent)),
+                      water=abs(cluster3$Z_Water_Index - mean(cluster3$Z_Water_Index)),
+                      i_black=abs(cluster3$Index_Black - mean(cluster3$Index_Black)),
+                      i_asian=abs(cluster3$Index_Asian - mean(cluster3$Index_Asian)),
+                      i_latino=abs(cluster3$Index_Latino - mean(cluster3$Index_Latino)),
+                      GHG=abs(cluster3$GHG_Percap - mean(cluster3$GHG_Percap)),
+                      unemploy=abs(cluster3$UNEMPLOY - mean(cluster3$UNEMPLOY)),
+                      food=abs(cluster3$FOOD_INS - mean(cluster3$FOOD_INS)),
+                      crime=abs(cluster3$VIO_CRIME - mean(cluster3$VIO_CRIME)))
+c3_diffs$s_diff <- rowSums(c3_diffs[2:ncol(c3_diffs)])
+cluster3_average <- c3_diffs[which.min(c3_diffs$s_diff),]
+cluster3_average
 
-air1 = data.frame(Name=cluster1$ME, AQI_Good=cluster1$AQI_Good, diff=abs(cluster1$AQI_Good - cluster_means$one[1])) 
-air1[which.min(air1$diff),]
-edu1 = data.frame(Name=cluster1$ME,edu=cluster1$Bachelor_Over_25, diff=abs(cluster1$Bachelor_Over_25 - cluster_means$one[2]))
-edu1[which.min(edu1$diff),]
+c4_diffs = data.frame(Name=cluster4$ME,
+                      air=abs(cluster4$AQI_Good - mean(cluster4$AQI_Good)),
+                      edu=abs(cluster4$Bachelor_Over_25 - mean(cluster4$Bachelor_Over_25)),
+                      pov=abs(cluster4$Per_Poverty - mean(cluster4$Per_Poverty)),
+                      ineq=abs(cluster4$Gini - mean(cluster4$Gini)),
+                      migration=abs(cluster4$non_migration - mean(cluster4$non_migration)),
+                      hous=abs(cluster4$Per_Sev_Hous - mean(cluster4$Per_Sev_Hous)),
+                      stream=abs(cluster4$Xstreamlengthimpaired - mean(cluster4$Xstreamlengthimpaired)),
+                      land=abs(cluster4$Per_Avg_Land_Cov - mean(cluster4$Per_Avg_Land_Cov)),
+                      health=abs(cluster4$poor_health_percent - mean(cluster4$poor_health_percent)),
+                      water=abs(cluster4$Z_Water_Index - mean(cluster4$Z_Water_Index)),
+                      i_black=abs(cluster4$Index_Black - mean(cluster4$Index_Black)),
+                      i_asian=abs(cluster4$Index_Asian - mean(cluster4$Index_Asian)),
+                      i_latino=abs(cluster4$Index_Latino - mean(cluster4$Index_Latino)),
+                      GHG=abs(cluster4$GHG_Percap - mean(cluster4$GHG_Percap)),
+                      unemploy=abs(cluster4$UNEMPLOY - mean(cluster4$UNEMPLOY)),
+                      food=abs(cluster4$FOOD_INS - mean(cluster4$FOOD_INS)),
+                      crime=abs(cluster4$VIO_CRIME - mean(cluster4$VIO_CRIME)))
+c4_diffs$s_diff <- rowSums(c4_diffs[2:ncol(c4_diffs)])
+cluster4_average <- c4_diffs[which.min(c4_diffs$s_diff),]
+cluster4_average
+
+c5_diffs = data.frame(Name=cluster5$ME,
+                      air=abs(cluster5$AQI_Good - mean(cluster5$AQI_Good)),
+                      edu=abs(cluster5$Bachelor_Over_25 - mean(cluster5$Bachelor_Over_25)),
+                      pov=abs(cluster5$Per_Poverty - mean(cluster5$Per_Poverty)),
+                      ineq=abs(cluster5$Gini - mean(cluster5$Gini)),
+                      migration=abs(cluster5$non_migration - mean(cluster5$non_migration)),
+                      hous=abs(cluster5$Per_Sev_Hous - mean(cluster5$Per_Sev_Hous)),
+                      stream=abs(cluster5$Xstreamlengthimpaired - mean(cluster5$Xstreamlengthimpaired)),
+                      land=abs(cluster5$Per_Avg_Land_Cov - mean(cluster5$Per_Avg_Land_Cov)),
+                      health=abs(cluster5$poor_health_percent - mean(cluster5$poor_health_percent)),
+                      water=abs(cluster5$Z_Water_Index - mean(cluster5$Z_Water_Index)),
+                      i_black=abs(cluster5$Index_Black - mean(cluster5$Index_Black)),
+                      i_asian=abs(cluster5$Index_Asian - mean(cluster5$Index_Asian)),
+                      i_latino=abs(cluster5$Index_Latino - mean(cluster5$Index_Latino)),
+                      GHG=abs(cluster5$GHG_Percap - mean(cluster5$GHG_Percap)),
+                      unemploy=abs(cluster5$UNEMPLOY - mean(cluster5$UNEMPLOY)),
+                      food=abs(cluster5$FOOD_INS - mean(cluster5$FOOD_INS)),
+                      crime=abs(cluster5$VIO_CRIME - mean(cluster5$VIO_CRIME)))
+c5_diffs$s_diff <- rowSums(c5_diffs[2:ncol(c5_diffs)])
+cluster5_average <- c5_diffs[which.min(c5_diffs$s_diff),]
+cluster5_average
+
+c6_diffs = data.frame(Name=cluster6$ME,
+                      air=abs(cluster6$AQI_Good - mean(cluster6$AQI_Good)),
+                      edu=abs(cluster6$Bachelor_Over_25 - mean(cluster6$Bachelor_Over_25)),
+                      pov=abs(cluster6$Per_Poverty - mean(cluster6$Per_Poverty)),
+                      ineq=abs(cluster6$Gini - mean(cluster6$Gini)),
+                      migration=abs(cluster6$non_migration - mean(cluster6$non_migration)),
+                      hous=abs(cluster6$Per_Sev_Hous - mean(cluster6$Per_Sev_Hous)),
+                      stream=abs(cluster6$Xstreamlengthimpaired - mean(cluster6$Xstreamlengthimpaired)),
+                      land=abs(cluster6$Per_Avg_Land_Cov - mean(cluster6$Per_Avg_Land_Cov)),
+                      health=abs(cluster6$poor_health_percent - mean(cluster6$poor_health_percent)),
+                      water=abs(cluster6$Z_Water_Index - mean(cluster6$Z_Water_Index)),
+                      i_black=abs(cluster6$Index_Black - mean(cluster6$Index_Black)),
+                      i_asian=abs(cluster6$Index_Asian - mean(cluster6$Index_Asian)),
+                      i_latino=abs(cluster6$Index_Latino - mean(cluster6$Index_Latino)),
+                      GHG=abs(cluster6$GHG_Percap - mean(cluster6$GHG_Percap)),
+                      unemploy=abs(cluster6$UNEMPLOY - mean(cluster6$UNEMPLOY)),
+                      food=abs(cluster6$FOOD_INS - mean(cluster6$FOOD_INS)),
+                      crime=abs(cluster6$VIO_CRIME - mean(cluster6$VIO_CRIME)))
+c6_diffs$s_diff <- rowSums(c6_diffs[2:ncol(c6_diffs)])
+cluster6_average <- c6_diffs[which.min(c6_diffs$s_diff),]
+cluster6_average
+
+c7_diffs = data.frame(Name=cluster7$ME,
+                      air=abs(cluster7$AQI_Good - mean(cluster7$AQI_Good)),
+                      edu=abs(cluster7$Bachelor_Over_25 - mean(cluster7$Bachelor_Over_25)),
+                      pov=abs(cluster7$Per_Poverty - mean(cluster7$Per_Poverty)),
+                      ineq=abs(cluster7$Gini - mean(cluster7$Gini)),
+                      migration=abs(cluster7$non_migration - mean(cluster7$non_migration)),
+                      hous=abs(cluster7$Per_Sev_Hous - mean(cluster7$Per_Sev_Hous)),
+                      stream=abs(cluster7$Xstreamlengthimpaired - mean(cluster7$Xstreamlengthimpaired)),
+                      land=abs(cluster7$Per_Avg_Land_Cov - mean(cluster7$Per_Avg_Land_Cov)),
+                      health=abs(cluster7$poor_health_percent - mean(cluster7$poor_health_percent)),
+                      water=abs(cluster7$Z_Water_Index - mean(cluster7$Z_Water_Index)),
+                      i_black=abs(cluster7$Index_Black - mean(cluster7$Index_Black)),
+                      i_asian=abs(cluster7$Index_Asian - mean(cluster7$Index_Asian)),
+                      i_latino=abs(cluster7$Index_Latino - mean(cluster7$Index_Latino)),
+                      GHG=abs(cluster7$GHG_Percap - mean(cluster7$GHG_Percap)),
+                      unemploy=abs(cluster7$UNEMPLOY - mean(cluster7$UNEMPLOY)),
+                      food=abs(cluster7$FOOD_INS - mean(cluster7$FOOD_INS)),
+                      crime=abs(cluster7$VIO_CRIME - mean(cluster7$VIO_CRIME)))
+c7_diffs$s_diff <- rowSums(c7_diffs[2:ncol(c7_diffs)])
+cluster7_average <- c7_diffs[which.min(c7_diffs$s_diff),]
+cluster7_average
+
+c8_diffs = data.frame(Name=cluster8$ME,
+                      air=abs(cluster8$AQI_Good - mean(cluster8$AQI_Good)),
+                      edu=abs(cluster8$Bachelor_Over_25 - mean(cluster8$Bachelor_Over_25)),
+                      pov=abs(cluster8$Per_Poverty - mean(cluster8$Per_Poverty)),
+                      ineq=abs(cluster8$Gini - mean(cluster8$Gini)),
+                      migration=abs(cluster8$non_migration - mean(cluster8$non_migration)),
+                      hous=abs(cluster8$Per_Sev_Hous - mean(cluster8$Per_Sev_Hous)),
+                      stream=abs(cluster8$Xstreamlengthimpaired - mean(cluster8$Xstreamlengthimpaired)),
+                      land=abs(cluster8$Per_Avg_Land_Cov - mean(cluster8$Per_Avg_Land_Cov)),
+                      health=abs(cluster8$poor_health_percent - mean(cluster8$poor_health_percent)),
+                      water=abs(cluster8$Z_Water_Index - mean(cluster8$Z_Water_Index)),
+                      i_black=abs(cluster8$Index_Black - mean(cluster8$Index_Black)),
+                      i_asian=abs(cluster8$Index_Asian - mean(cluster8$Index_Asian)),
+                      i_latino=abs(cluster8$Index_Latino - mean(cluster8$Index_Latino)),
+                      GHG=abs(cluster8$GHG_Percap - mean(cluster8$GHG_Percap)),
+                      unemploy=abs(cluster8$UNEMPLOY - mean(cluster8$UNEMPLOY)),
+                      food=abs(cluster8$FOOD_INS - mean(cluster8$FOOD_INS)),
+                      crime=abs(cluster8$VIO_CRIME - mean(cluster8$VIO_CRIME)))
+c8_diffs$s_diff <- rowSums(c8_diffs[2:ncol(c8_diffs)])
+cluster8_average <- c8_diffs[which.min(c8_diffs$s_diff),]
+cluster8_average
+
+c9_diffs = data.frame(Name=cluster9$ME,
+                      air=abs(cluster9$AQI_Good - mean(cluster9$AQI_Good)),
+                      edu=abs(cluster9$Bachelor_Over_25 - mean(cluster9$Bachelor_Over_25)),
+                      pov=abs(cluster9$Per_Poverty - mean(cluster9$Per_Poverty)),
+                      ineq=abs(cluster9$Gini - mean(cluster9$Gini)),
+                      migration=abs(cluster9$non_migration - mean(cluster9$non_migration)),
+                      hous=abs(cluster9$Per_Sev_Hous - mean(cluster9$Per_Sev_Hous)),
+                      stream=abs(cluster9$Xstreamlengthimpaired - mean(cluster9$Xstreamlengthimpaired)),
+                      land=abs(cluster9$Per_Avg_Land_Cov - mean(cluster9$Per_Avg_Land_Cov)),
+                      health=abs(cluster9$poor_health_percent - mean(cluster9$poor_health_percent)),
+                      water=abs(cluster9$Z_Water_Index - mean(cluster9$Z_Water_Index)),
+                      i_black=abs(cluster9$Index_Black - mean(cluster9$Index_Black)),
+                      i_asian=abs(cluster9$Index_Asian - mean(cluster9$Index_Asian)),
+                      i_latino=abs(cluster9$Index_Latino - mean(cluster9$Index_Latino)),
+                      GHG=abs(cluster9$GHG_Percap - mean(cluster9$GHG_Percap)),
+                      unemploy=abs(cluster9$UNEMPLOY - mean(cluster9$UNEMPLOY)),
+                      food=abs(cluster9$FOOD_INS - mean(cluster9$FOOD_INS)),
+                      crime=abs(cluster9$VIO_CRIME - mean(cluster9$VIO_CRIME)))
+c9_diffs$s_diff <- rowSums(c9_diffs[2:ncol(c9_diffs)])
+cluster9_average <- c9_diffs[which.min(c9_diffs$s_diff),]
+cluster9_average
+
+c10_diffs = data.frame(Name=cluster10$ME,
+                       air=abs(cluster10$AQI_Good - mean(cluster10$AQI_Good)),
+                       edu=abs(cluster10$Bachelor_Over_25 - mean(cluster10$Bachelor_Over_25)),
+                       pov=abs(cluster10$Per_Poverty - mean(cluster10$Per_Poverty)),
+                       ineq=abs(cluster10$Gini - mean(cluster10$Gini)),
+                       migration=abs(cluster10$non_migration - mean(cluster10$non_migration)),
+                       hous=abs(cluster10$Per_Sev_Hous - mean(cluster10$Per_Sev_Hous)),
+                       stream=abs(cluster10$Xstreamlengthimpaired - mean(cluster10$Xstreamlengthimpaired)),
+                       land=abs(cluster10$Per_Avg_Land_Cov - mean(cluster10$Per_Avg_Land_Cov)),
+                       health=abs(cluster10$poor_health_percent - mean(cluster10$poor_health_percent)),
+                       water=abs(cluster10$Z_Water_Index - mean(cluster10$Z_Water_Index)),
+                       i_black=abs(cluster10$Index_Black - mean(cluster10$Index_Black)),
+                       i_asian=abs(cluster10$Index_Asian - mean(cluster10$Index_Asian)),
+                       i_latino=abs(cluster10$Index_Latino - mean(cluster10$Index_Latino)),
+                       GHG=abs(cluster10$GHG_Percap - mean(cluster10$GHG_Percap)),
+                       unemploy=abs(cluster10$UNEMPLOY - mean(cluster10$UNEMPLOY)),
+                       food=abs(cluster10$FOOD_INS - mean(cluster10$FOOD_INS)),
+                       crime=abs(cluster10$VIO_CRIME - mean(cluster10$VIO_CRIME)))
+c10_diffs$s_diff <- rowSums(c10_diffs[2:ncol(c10_diffs)])
+cluster10_average <- c10_diffs[which.min(c10_diffs$s_diff),]
+cluster10_average
+
+typical_members <- data.frame(Cluster=c(1:10), Name=c(cluster1_average$Name,
+                              cluster2_average$Name,
+                              cluster3_average$Name,
+                              cluster4_average$Name,
+                              cluster5_average$Name,
+                              cluster6_average$Name,
+                              cluster7_average$Name,
+                              cluster8_average$Name,
+                              cluster9_average$Name,
+                              cluster10_average$Name))
 
 ###################################################33
 ##############################
