@@ -66,6 +66,9 @@ data<-read.csv("results/cluster_assignment.csv")
 class_prob <- round(dat_mc10$z, digits=3)
 class_prob
 
+#cluster means
+means <- dat_mc10$parameters$mean
+
 
 ##########################################################3
 #examine which clusters score highly in different metrics
@@ -177,6 +180,18 @@ low_index_black <- cluster_means_t[which.min(cluster_means_t$Index_Black),]
 low_index_asian <- cluster_means_t[which.min(cluster_means_t$Index_Asian),]
 low_index_latino <- cluster_means_t[which.min(cluster_means_t$Index_Latino),]
 
+best_air$cluster
+best_edu$cluster
+best_pov$cluster
+best_ineq$cluster
+best_hous$cluster
+best_stream$cluster
+best_land$cluster
+best_health$cluster
+best_water$cluster
+low_index_black$cluster 
+low_index_asian$cluster
+low_index_latino$cluster
 #clusters scoring the worst in different metrics
 
 #most sustainable MSAs
@@ -221,8 +236,19 @@ cluster10 <- data.frame(subset(dat_clust, x=="10"))
 # c1_low_index_asian <- cluster1[which.min(cluster1$Index_Asian),]
 # c1_low_index_latino <- cluster1[which.min(cluster1$Index_Latino),]
 
+#MSAs most like their average values
+
+
+
+air1 = data.frame(Name=cluster1$ME, AQI_Good=cluster1$AQI_Good, diff=abs(cluster1$AQI_Good - cluster_means$one[1])) 
+air1[which.min(air1$diff),]
+edu1 = data.frame(Name=cluster1$ME,edu=cluster1$Bachelor_Over_25, diff=abs(cluster1$Bachelor_Over_25 - cluster_means$one[2]))
+edu1[which.min(edu1$diff),]
+
+###################################################33
 ##############################
 # adjust values for variables so that high=good and low=bad for all variables
+##########################################################################
 
 dat_clust_adj <- dat_clust
 dat_clust_adj$Per_Poverty <- dat_clust$Per_Poverty * -1
@@ -321,8 +347,22 @@ findElbowPoint(c10_PCA$variance)
 biplot(c10_PCA, showLoadings = T, showLoadingsNames = T, hline=0,vline=0, title='Cluster 10')
 plotloadings(c10_PCA, title="Cluster 10")
 
+
+#### PCA on full dataset
+
+Tpca <- pca(dat_clust_adj[2:18],transposed = T)
+screeplot(Tpca)
+findElbowPoint(Tpca$variance)
+PCAtools::biplot(Tpca, x="PC1",y="PC2")
+plotloadings(Tpca)
+
+Tpca <- princomp(dat_clust_adj[2:18])
+stats::biplot(Tpca)
+
+
+
 ####################################
-#dimension reduction
+#dimension reduction based on cluster modeling
 ########################################
 DR <- MclustDR(dat_mc10, lambda = 1) #setting lambda to 1 gives most separating directions
 summary(DR)
@@ -414,34 +454,3 @@ cluster_map <- tm_shape(cluster_sf) + tm_fill(col="Cluster", palette="Spectral")
 us_map + cluster_map
 
 
-
-#
-library("RCurl")
-library(RCurl)
-URL <- "https://www2.census.gov/geo/tiger/TIGER2018/CBSA/tl_2018_us_cbsa.zip"
-download.file(URL,destfile="data/MSA/MSA.zip",method="libcurl")
-unzip(here("data/MSA/MSA.zip"))
-msa_Boundary <-readOGR(here("data/MSA"),"tl_2018_us_cbsa") 
-merged <- merge(msa_Boundary,data,by.x="NAME",by.y="X")
-spplot(merged,"x")
-
-library(leaflet) 
-leaflet(merged) %>%
-  addPolygons()
-
-library(leaflet) 
-pal <- colorFactor(rainbow(8), merged$x,
-                   na.color = "transparent")
-p_popup <- paste0("<strong>MSA: </strong>", merged$NAME)
-
-leaflet(merged) %>%
-  addPolygons(
-    stroke = FALSE, # remove polygon borders
-    fillColor = ~pal(x), # set fill color with function from above and value
-    fillOpacity = 0.8, smoothFactor = 0.5, # make it nicer
-    popup = p_popup) %>%
-  addTiles() %>%
-  addLegend("bottomright",  # location
-            pal=pal,    # palette function
-            values=~x,  # value to be passed to palette function
-            title = 'Cluster') # legend title
