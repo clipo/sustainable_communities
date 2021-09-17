@@ -299,6 +299,10 @@ dat_clust_adj$Z_Water_Index <- dat_clust$Z_Water_Index * -1
 dat_clust_adj$Index_Black <- dat_clust$Index_Black * -1
 dat_clust_adj$Index_Asian <- dat_clust$Index_Asian * -1
 dat_clust_adj$Index_Latino <- dat_clust$Index_Latino * -1
+dat_clust_adj$GHG_Percap <- dat_clust$GHG_Percap * -1
+dat_clust_adj$UNEMPLOY <- dat_clust$UNEMPLOY * -1
+dat_clust_adj$FOOD_INS <- dat_clust$FOOD_INS * -1
+dat_clust_adj$VIO_CRIME <- dat_clust$VIO_CRIME * -1
 
 cluster1a <- data.frame(subset(dat_clust_adj, x=="1"))
 cluster2a <- data.frame(subset(dat_clust_adj, x=="2"))

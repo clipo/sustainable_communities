@@ -11,6 +11,7 @@ library(tmap)
 library(terra)
 library(rgeos)
 library(spData)
+library(lattice)
 
 #import raw data
 dat_raw <- read.csv(here("data/CommunityData-raw-2015.csv"))
@@ -69,6 +70,43 @@ class_prob
 #cluster means
 means <- dat_mc10$parameters$mean
 
+####################################################################
+# stratigraphic plot of probabilistic cluster assignments
+
+class_prob_sort <- class_prob[order( -class_prob[,1], 
+                                     -class_prob[,2],
+                                     -class_prob[,3],
+                                     -class_prob[,4],
+                                     -class_prob[,5],
+                                     -class_prob[,6],
+                                     -class_prob[,7],
+                                     -class_prob[,8],
+                                     -class_prob[,9],
+                                     -class_prob[,10]),]
+
+
+heatmap(class_prob_sort, Rowv = NA, Colv = NA, 
+        col = colorRampPalette(brewer.pal(8,"Blues"))(3))
+
+# Plot a legend in bottom right part of heatmap
+legend(x = "bottomright", legend = c("low", "medium", "high"),
+       cex = 0.8, fill = colorRampPalette(brewer.pal(8, "Blues"))(3))
+
+
+# equal-frequency class intervals -- chunk 1
+plotvar = "POP1990"
+plotvals <- orcounty_sf$POP1990
+title <- "Population 1990"
+subtitle <- "Quantile (Equal-Frequency) Class Intervals"
+nclr <- 3
+plotclr <- brewer.pal(3,"BuPu")
+class <- classIntervals(plotvals, nclr, style="quantile")
+colcode <- findColours(class, plotclr)
+
+plot(orcounty_sf[plotvar], col=colcode, xlim=c(-124.5, -115), ylim=c(42,47))
+title(main=title, sub=subtitle)
+legend("bottomright", legend=names(attr(colcode, "table")),
+       fill=attr(colcode, "palette"), cex=1.0, bty="n")
 
 ##########################################################3
 #examine which clusters score highly in different metrics
@@ -100,10 +138,14 @@ boxplot(dat_clust$poor_health_percent~dat_clust$x, ylab="Poor Health %", xlab="C
 boxplot(dat_clust$VIO_CRIME~dat_clust$x, ylab="Violent Crime", xlab="Cluster")
 
 
+
+
+
 #plot subsets
 
 par(mfrow=c(2,5), mar=c(2.5,5,2.5,3))
 boxplot(subset(dat_clust, x=="1")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 1")
+abline(v=0)
 boxplot(subset(dat_clust, x=="2")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 2")
 boxplot(subset(dat_clust, x=="3")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 3")
 boxplot(subset(dat_clust, x=="4")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 4")
@@ -130,6 +172,10 @@ c10m <- data.frame(ten=colMeans(subset(dat_clust, x=="10")[2:18]))
 cluster_means <- cbind.data.frame(c1m,c2m,c3m,c4m,c5m,c6m,c7m,c8m, c9m, c10m)
 cluster_means$variable <- row.names(cluster_means)
 rownames(cluster_means) <- NULL
+
+write.csv(cluster_means, file=here("results/cluster_means.csv"))
+
+cluster_means
 
 par(mfrow=c(2,5))
 dotchart(cluster_means$one, labels=cluster_means$variable,xlim=c(-2,2), main='Cluster 1', pch=16)
@@ -186,7 +232,7 @@ best_crime <- cluster_means_t[which.min(cluster_means_t$VIO_CRIME),]
 
 
 most_sustainable_clusters <- data.frame(Metric=c(colnames(cluster_means_t[c(1:4,6:17)])),
-                                        Cluster=c(
+                                        Best_Cluster=c(
                                         best_air$cluster,
                                         best_edu$cluster,
                                         best_pov$cluster,
@@ -208,7 +254,47 @@ most_sustainable_clusters
 
 #clusters scoring the worst in different metrics
 
-#most sustainable MSAs
+worst_air <- cluster_means_t[which.min(cluster_means_t$AQI_Good),]
+worst_edu <- cluster_means_t[which.min(cluster_means_t$Bachelor_Over_25),]
+worst_pov <- cluster_means_t[which.max(cluster_means_t$Per_Poverty),]
+worst_ineq <- cluster_means_t[which.max(cluster_means_t$Gini),]
+worst_hous <- cluster_means_t[which.max(cluster_means_t$Per_Sev_Hous),]
+worst_stream <- cluster_means_t[which.max(cluster_means_t$Xstreamlengthimpaired),]
+worst_land <- cluster_means_t[which.min(cluster_means_t$Per_Avg_Land_Cov),]
+worst_health <- cluster_means_t[which.max(cluster_means_t$poor_health_percent),]
+worst_water <- cluster_means_t[which.max(cluster_means_t$Z_Water_Index),]
+high_index_black <- cluster_means_t[which.max(cluster_means_t$Index_Black),]
+high_index_asian <- cluster_means_t[which.max(cluster_means_t$Index_Asian),]
+high_index_latino <- cluster_means_t[which.max(cluster_means_t$Index_Latino),]
+worst_emissions <- cluster_means_t[which.max(cluster_means_t$GHG_Percap),]
+worst_employmet <- cluster_means_t[which.max(cluster_means_t$UNEMPLOY),]
+worst_food <- cluster_means_t[which.max(cluster_means_t$FOOD_INS),]
+worst_crime <- cluster_means_t[which.max(cluster_means_t$VIO_CRIME),]
+
+least_sustainable_clusters <- data.frame(Metric=c(colnames(cluster_means_t[c(1:4,6:17)])),
+                                        Worst_Cluster=c(
+                                          worst_air$cluster,
+                                          worst_edu$cluster,
+                                          worst_pov$cluster,
+                                          worst_ineq$cluster,
+                                          worst_hous$cluster,
+                                          worst_stream$cluster,
+                                          worst_land$cluster,
+                                          worst_health$cluster,
+                                          worst_water$cluster,
+                                          high_index_black$cluster,
+                                          high_index_asian$cluster,
+                                          high_index_latino$cluster,
+                                          worst_emissions$cluster,
+                                          worst_employmet$cluster,
+                                          worst_food$cluster,
+                                          worst_crime$cluster))
+
+best_and_worst <- data.frame(Metric=most_sustainable_clusters$Metric, Best=most_sustainable_clusters$Best_Cluster, Worst=least_sustainable_clusters$Worst_Cluster)
+best_and_worst
+
+
+#most sustainable MSAs accross all clusters
 
 MSA_best_air <- dat_clust[which.max(dat_clust$AQI_Good),]
 MSA_best_edu <- dat_clust[which.max(dat_clust$Bachelor_Over_25),]
@@ -285,6 +371,10 @@ typical_members <- data.frame(Cluster=c(1:10), Name=c(cluster1_average$Name,
                               cluster9_average$Name,
                               cluster10_average$Name))
 typical_members
+
+
+
+
 ###################################################33
 ##############################
 # adjust values for variables so that high=good and low=bad for all variables
@@ -300,8 +390,13 @@ dat_clust_adj$Z_Water_Index <- dat_clust$Z_Water_Index * -1
 dat_clust_adj$Index_Black <- dat_clust$Index_Black * -1
 dat_clust_adj$Index_Asian <- dat_clust$Index_Asian * -1
 dat_clust_adj$Index_Latino <- dat_clust$Index_Latino * -1
+dat_clust_adj$GHG_Percap <- dat_clust$GHG_Percap * -1
+dat_clust_adj$UNEMPLOY <- dat_clust$UNEMPLOY * -1
+dat_clust_adj$FOOD_INS <- dat_clust$FOOD_INS * -1
+dat_clust_adj$VIO_CRIME <- dat_clust$VIO_CRIME * -1
 
-#calculate which are the 'highest scoring' MSAs
+
+#calculate which are the 'highest scoring' MSAs accross all clusters
 dat_clust_adj_sums <- dat_clust_adj
 dat_clust_adj_sums$Total <- rowSums(dat_clust_adj_sums[2:18])
 #order by Total
@@ -322,20 +417,25 @@ cluster8a <- data.frame(subset(dat_clust_adj, x=="8"))
 cluster9a <- data.frame(subset(dat_clust_adj, x=="9"))
 cluster10a <- data.frame(subset(dat_clust_adj, x=="10"))
 
-#### Higest scoring MSAs by cluster
+#### "Highest" scoring MSAs by cluster
 
-cluster1_best <- cluster1a
-cluster1_best$Total <- rowSums(cluster1_best[2:18])
-#order by total
-cluster1_best <- cluster1_best[order(-cluster1_best$Total),] 
-head(cluster1_best[c(1,20)], n=10)
+best_in_cluster <- function(x){
+  cluster_best = x
+  cluster_best$Total = rowSums(cluster_best[2:18])
+  cluster_best = cluster_best[order(-cluster_best$Total),]
+  return(head(cluster_best[c(1,20)],n=10))
+}
 
-cluster2_best <- cluster2a
-cluster2_best$Total <- rowSums(cluster2_best[2:18])
-#order by total
-cluster2_best <- cluster2_best[order(-cluster2_best$Total),] 
-head(cluster2_best[c(1,20)], n=10)
-
+best_in_cluster(cluster1a)
+best_in_cluster(cluster2a)
+best_in_cluster(cluster3a)
+best_in_cluster(cluster4a)
+best_in_cluster(cluster5a)
+best_in_cluster(cluster6a)
+best_in_cluster(cluster7a)
+best_in_cluster(cluster8a)
+best_in_cluster(cluster9a)
+best_in_cluster(cluster10a)
 
 
 
