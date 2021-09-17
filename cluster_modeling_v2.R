@@ -508,26 +508,26 @@ best<-data.frame(name=best$ME,Total=best$Total)
 best
 
 
-cluster1 <- data.frame(subset(dat_clust_adj, x=="1"))
-cluster2 <- data.frame(subset(dat_clust_adj, x=="2"))
-cluster3 <- data.frame(subset(dat_clust_adj, x=="3"))
-cluster4 <- data.frame(subset(dat_clust_adj, x=="4"))
-cluster5 <- data.frame(subset(dat_clust_adj, x=="5"))
-cluster6 <- data.frame(subset(dat_clust_adj, x=="6"))
-cluster7 <- data.frame(subset(dat_clust_adj, x=="7"))
-cluster8 <- data.frame(subset(dat_clust_adj, x=="8"))
-cluster9 <- data.frame(subset(dat_clust_adj, x=="9"))
-cluster10 <- data.frame(subset(dat_clust_adj, x=="10"))
+cluster1a <- data.frame(subset(dat_clust_adj, x=="1"))
+cluster2a <- data.frame(subset(dat_clust_adj, x=="2"))
+cluster3a <- data.frame(subset(dat_clust_adj, x=="3"))
+cluster4a <- data.frame(subset(dat_clust_adj, x=="4"))
+cluster5a <- data.frame(subset(dat_clust_adj, x=="5"))
+cluster6a <- data.frame(subset(dat_clust_adj, x=="6"))
+cluster7a <- data.frame(subset(dat_clust_adj, x=="7"))
+cluster8a <- data.frame(subset(dat_clust_adj, x=="8"))
+cluster9a <- data.frame(subset(dat_clust_adj, x=="9"))
+cluster10a <- data.frame(subset(dat_clust_adj, x=="10"))
 
 #### Higest scoring MSAs by cluster
 
-cluster1_best <- cluster1
+cluster1_best <- cluster1a
 cluster1_best$Total <- rowSums(cluster1_best[2:18])
 #order by total
 cluster1_best <- cluster1_best[order(-cluster1_best$Total),] 
 head(cluster1_best[c(1,20)], n=10)
 
-cluster2_best <- cluster2
+cluster2_best <- cluster2a
 cluster2_best$Total <- rowSums(cluster2_best[2:18])
 #order by total
 cluster2_best <- cluster2_best[order(-cluster2_best$Total),] 
@@ -542,70 +542,70 @@ head(cluster2_best[c(1,20)], n=10)
 
 
 #PCA cluster 1
-c1_PCA <- pca(cluster1[2:18],transposed = T)
+c1_PCA <- pca(cluster1a[2:18],transposed = T)
 screeplot(c1_PCA, title="Scree plot Cluster 1")
 findElbowPoint(c1_PCA$variance)
 biplot(c1_PCA, showLoadings = T, showLoadingsNames = T, hline=0,vline=0, title='Cluster 1')
 plotloadings(c1_PCA, title="Cluster 1")
 
 #PCA cluster 2
-c2_PCA <- pca(cluster2[2:18],transposed = T)
+c2_PCA <- pca(cluster2a[2:18],transposed = T)
 screeplot(c2_PCA)
 findElbowPoint(c2_PCA$variance)
 biplot(c2_PCA, showLoadings = T, showLoadingsNames = T, hline=0,vline=0, title='Cluster 2')
 plotloadings(c2_PCA, title="Cluster 2")
 
 #PCA cluster 3
-c3_PCA <- pca(cluster3[2:18],transposed = T)
+c3_PCA <- pca(cluster3a[2:18],transposed = T)
 screeplot(c3_PCA)
 findElbowPoint(c3_PCA$variance)
 biplot(c3_PCA, showLoadings = T, showLoadingsNames = T, hline=0,vline=0, title='Cluster 3')
 plotloadings(c3_PCA, title="Cluster 3")
 
 #PCA cluster 4
-c4_PCA <- pca(cluster4[2:18],transposed = T)
+c4_PCA <- pca(cluster4a[2:18],transposed = T)
 screeplot(c4_PCA)
 findElbowPoint(c4_PCA$variance)
 biplot(c4_PCA, showLoadings = T, showLoadingsNames = T, hline=0,vline=0, title='Cluster 4')
 plotloadings(c4_PCA, title="Cluster 4")
 
 #PCA cluster 5
-c5_PCA <- pca(cluster5[2:18],transposed = T)
+c5_PCA <- pca(cluster5a[2:18],transposed = T)
 screeplot(c5_PCA)
 findElbowPoint(c5_PCA$variance)
 biplot(c5_PCA, showLoadings = T, showLoadingsNames = T, hline=0,vline=0, title='Cluster 5')
 plotloadings(c5_PCA, title="Cluster 5")
 
 #PCA cluster 6
-c6_PCA <- pca(cluster6[2:18],transposed = T)
+c6_PCA <- pca(cluster6a[2:18],transposed = T)
 screeplot(c6_PCA)
 findElbowPoint(c6_PCA$variance)
 biplot(c6_PCA, showLoadings = T, showLoadingsNames = T, hline=0,vline=0, title='Cluster 6')
 plotloadings(c6_PCA, title="Cluster 6")
 
 #PCA cluster 7
-c7_PCA <- pca(cluster7[2:18],transposed = T)
+c7_PCA <- pca(cluster7a[2:18],transposed = T)
 screeplot(c7_PCA)
 findElbowPoint(c7_PCA$variance)
 biplot(c7_PCA, showLoadings = T, showLoadingsNames = T, hline=0,vline=0, title='Cluster 7')
 plotloadings(c7_PCA, title="Cluster 7")
 
 #PCA cluster 8
-c8_PCA <- pca(cluster8[2:18],transposed = T)
+c8_PCA <- pca(cluster8a[2:18],transposed = T)
 screeplot(c8_PCA)
 findElbowPoint(c8_PCA$variance)
 biplot(c8_PCA, showLoadings = T, showLoadingsNames = T, hline=0,vline=0, title='Cluster 8')
 plotloadings(c8_PCA, title="Cluster 8")
 
 #PCA cluster 9
-c9_PCA <- pca(cluster9[2:18],transposed = T)
+c9_PCA <- pca(cluster9a[2:18],transposed = T)
 screeplot(c9_PCA)
 findElbowPoint(c9_PCA$variance)
 biplot(c9_PCA, showLoadings = T, showLoadingsNames = T, hline=0,vline=0, title='Cluster 9')
 plotloadings(c9_PCA, title="Cluster 9")
 
 #PCA cluster 10
-c10_PCA <- pca(cluster10[2:18],transposed = T)
+c10_PCA <- pca(cluster10a[2:18],transposed = T)
 screeplot(c10_PCA)
 findElbowPoint(c10_PCA$variance)
 biplot(c10_PCA, showLoadings = T, showLoadingsNames = T, hline=0,vline=0, title='Cluster 10')
