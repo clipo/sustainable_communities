@@ -12,6 +12,11 @@ library(terra)
 library(rgeos)
 library(spData)
 library(lattice)
+library(classInt)
+
+###################################
+##### IMPORT DATA
+###################################
 
 #import raw data
 dat_raw <- read.csv(here("data/CommunityData-raw-2015.csv"))
@@ -67,6 +72,8 @@ data<-read.csv("results/cluster_assignment.csv")
 class_prob <- round(dat_mc10$z, digits=3)
 class_prob
 
+write.csv(class_prob, file=here("results/class_prob.csv"))
+
 #cluster means
 means <- dat_mc10$parameters$mean
 
@@ -85,27 +92,20 @@ class_prob_sort <- class_prob[order( -class_prob[,1],
                                      -class_prob[,10]),]
 
 
-heatmap(class_prob_sort, Rowv = NA, Colv = NA, 
-        col = colorRampPalette(brewer.pal(8,"Blues"))(3))
+
 
 # Plot a legend in bottom right part of heatmap
 legend(x = "bottomright", legend = c("low", "medium", "high"),
        cex = 0.8, fill = colorRampPalette(brewer.pal(8, "Blues"))(3))
 
 
-# equal-frequency class intervals -- chunk 1
-plotvar = "POP1990"
-plotvals <- orcounty_sf$POP1990
-title <- "Population 1990"
-subtitle <- "Quantile (Equal-Frequency) Class Intervals"
-nclr <- 3
-plotclr <- brewer.pal(3,"BuPu")
-class <- classIntervals(plotvals, nclr, style="quantile")
+plotclr <- brewer.pal(3,"RdBu")
+class <- classIntervals(runif(1000,0,1),3, style="fixed",fixedBreaks=c(0,0.1,0.9, 1))
 colcode <- findColours(class, plotclr)
 
-plot(orcounty_sf[plotvar], col=colcode, xlim=c(-124.5, -115), ylim=c(42,47))
-title(main=title, sub=subtitle)
-legend("bottomright", legend=names(attr(colcode, "table")),
+heatmap(class_prob_sort[1:100,], Rowv = NA, Colv = NA, 
+        )
+legend("bottomleft", legend=names(attr(colcode, "table")),
        fill=attr(colcode, "palette"), cex=1.0, bty="n")
 
 ##########################################################3
@@ -143,7 +143,8 @@ boxplot(dat_clust$VIO_CRIME~dat_clust$x, ylab="Violent Crime", xlab="Cluster")
 
 #plot subsets
 
-par(mfrow=c(2,5), mar=c(2.5,5,2.5,3))
+#par(mfrow=c(2,5), mar=c(2.5,5,2.5,3))
+par(mar=c(7,7,7,7))
 boxplot(subset(dat_clust, x=="1")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 1")
 abline(v=0)
 boxplot(subset(dat_clust, x=="2")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 2")
@@ -156,6 +157,10 @@ boxplot(subset(dat_clust, x=="8")[2:18], horizontal=T, las=1, ylim=c(-4,4), main
 boxplot(subset(dat_clust, x=="9")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 9")
 boxplot(subset(dat_clust, x=="10")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 10")
 par(mfrow=c(1,1))
+
+par(mfrow=c(1,2))
+boxplot(subset(dat_clust, x=="4")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 4")
+boxplot(subset(dat_clust, x=="7")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 7")
 
 #calculate cluster means for different variables
 c1m <- data.frame(one=colMeans(subset(dat_clust, x=="1")[2:18]))
@@ -294,7 +299,7 @@ best_and_worst <- data.frame(Metric=most_sustainable_clusters$Metric, Best=most_
 best_and_worst
 
 
-#most sustainable MSAs accross all clusters
+#most sustainable MSAs across all clusters
 
 MSA_best_air <- dat_clust[which.max(dat_clust$AQI_Good),]
 MSA_best_edu <- dat_clust[which.max(dat_clust$Bachelor_Over_25),]
@@ -619,3 +624,17 @@ cluster_sf
 us_map <- tm_shape(us_states) + tm_borders()
 cluster_map <- tm_shape(cluster_sf) + tm_fill(col="Cluster", palette="Spectral")
 us_map + cluster_map
+
+
+# #link all data with map
+# 
+# # MSA shapefile from - https://www2.census.gov/geo/tiger/TIGER2015/CBSA/
+# msa_Boundary <-readOGR(here("data/MSA"),"tl_2015_us_cbsa") 
+# #merge them
+# merged <- merge(msa_Boundary,dat_clust,by.x="NAME",by.y="ME")
+# #remove any cases MSAs with no cluster assignments
+# merged_clean <- merged[!is.na(merged$x),]
+# #convert x to factor
+# merged_clean$Cluster <- as.factor(merged_clean$x)
+# 
+# tm_shape(cluster_sf) + tm_fill(col="Z_Water_index")

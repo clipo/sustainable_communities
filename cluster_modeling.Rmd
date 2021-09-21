@@ -1,7 +1,7 @@
 ---
 title: "MSA Cluster Modeling"
 author: "Robert J. DiNapoli"
-date: "9/16/2021"
+date: "9/21/2021"
 output: html_document
 ---
 
@@ -10,7 +10,6 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Load Packages
-
 ```{r, results='hide', message=FALSE}
 library(here)
 library(mclust)
@@ -25,6 +24,7 @@ library(terra)
 library(rgeos)
 library(spData)
 library(knitr)
+library(kableExtra)
 ```
 
 # Import Data
@@ -44,6 +44,67 @@ dat = na.omit(dat)
 dat <- as.matrix(scale(dat, center = TRUE, scale = TRUE))
 ```
 
+# Run PCA on dataset
+```{r}
+dat_comps <- prcomp(dat, center = F, scale=F) #set center and scale to FALSE because done pre-PCA
+#get summary
+s <- summary(dat_comps)
+kable(s$importance)
+#get eigenvalues
+ev <- data.frame(Component=paste("PC",1:17, sep=""),eigenvalue=dat_comps$sdev^2)
+kable(ev)
+```
+
+## Extract components with eigenvalues > 1
+```{r}
+dat_pcs <- dat_comps$x[,1:5]
+```
+
+## Plot loadings
+```{r}
+#plot loadings of pc1 and 2
+plot(dat_comps$x[,1],dat_comps$x[,2], 
+     xlab=paste("PCA 1 (", round(s$importance[2,1]*100, 1), "%)", sep = ""), 
+     ylab=paste("PCA 2 (", round(s$importance[2,2]*100, 1), "%)", sep = ""), 
+     pch=16, col="blue", cex=0.5)
+abline(v=0, lwd=2, lty=2)
+abline(h=0, lwd=2, lty=2)
+#get loadings
+l.x <- dat_comps$rotation[,1]*10
+l.y <- dat_comps$rotation[,2]*10
+arrows(x0=mean(dat_comps$x[,1]), x1=l.x, y0=mean(dat_comps$x[,2]), y1=l.y, col="black", length=0.15, lwd=1.5)
+# Label position
+l.pos <- l.y # Create a vector of y axis coordinates
+lo <- which(l.y < 0) # Get the variables on the bottom half of the plot
+hi <- which(l.y > 0) # Get variables on the top half
+# Replace values in the vector
+l.pos <- replace(l.pos, lo, "1")
+l.pos <- replace(l.pos, hi, "3")
+text(l.x, l.y, labels=row.names(dat_comps$rotation), col="black", pos=l.pos, cex=1.25)
+
+#plot loadings of pc 3 and 4
+plot(dat_comps$x[,3],dat_comps$x[,4], 
+     xlab=paste("PCA 3 (", round(s$importance[2,3]*100, 1), "%)", sep = ""), 
+     ylab=paste("PCA 4 (", round(s$importance[2,4]*100, 1), "%)", sep = ""), 
+     pch=16, col="blue", cex=0.5)
+abline(v=0, lwd=2, lty=2)
+abline(h=0, lwd=2, lty=2)
+
+#get loadings
+l.x <- dat_comps$rotation[,3]*10
+l.y <- dat_comps$rotation[,4]*10
+arrows(x0=mean(dat_comps$x[,3]), x1=l.x, y0=mean(dat_comps$x[,4]), y1=l.y, col="black", length=0.15, lwd=1.5)
+# Label position
+l.pos <- l.y # Create a vector of y axis coordinates
+lo <- which(l.y < 0) # Get the variables on the bottom half of the plot
+hi <- which(l.y > 0) # Get variables on the top half
+# Replace values in the vector
+l.pos <- replace(l.pos, lo, "1")
+l.pos <- replace(l.pos, hi, "3")
+text(l.x, l.y, labels=row.names(dat_comps$rotation), col="black", pos=l.pos, cex=1.25)
+```
+
+
 # Run Cluster GMM
 
 Assumptions: - MSAs form clusters characterized by a multivariate distribution
@@ -53,37 +114,35 @@ Assumptions: - MSAs form clusters characterized by a multivariate distribution
                - Based on Bayesian Information Criterion (BIC)
 
 ```{r}
-#run mclust on 1 to 20 clusters
-dat_mc <- Mclust(dat, G=c(1:20))
+#run GMM on 1-20 clusters
+dat_pcs_mc <- Mclust(dat_pcs, G=c(1:20))
 #print summary of model fit
-summary(dat_mc)
+summary(dat_pcs_mc)
 ```
 
 # Model comparison
 ```{r}
 #plot BIC scores of different models
-plot(dat_mc, what='BIC')
+plot(dat_pcs_mc, what='BIC')
 #zoom in on best-fitting models
-plot(dat_mc, what='BIC', ylim=c(-37000,-35000))
+plot(dat_pcs_mc, what='BIC', ylim=c(-15300,-15150))
 
-#model type VVE chosen as best, with similar BIC scores for 9-12 clusters
-#to do additional model comparisons, generate and compare VVE models with 9-12 clusters
-dat_mc9 <- Mclust(dat, G=9, modelNames="VVE")
-dat_mc10 <- Mclust(dat, G=10, modelNames="VVE")
-dat_mc11 <- Mclust(dat, G=11, modelNames="VVE")
-dat_mc12 <- Mclust(dat, G=12, modelNames="VVE")
+#model type VEI and VEE have similar BIC scores for 8-9 clusters
+#do additional model comparisons
+m_VEI_8 <- Mclust(dat_pcs, G=8, modelNames="VEI")
+m_VEE_8 <- Mclust(dat_pcs, G=8, modelNames="VEE")
+m_VEI_9 <- Mclust(dat_pcs, G=9, modelNames="VEI")
+m_VEE_9 <- Mclust(dat_pcs, G=9, modelNames="VEE")
 
 #extract BIC scores
-BICs<-c(dat_mc9$BIC[1],dat_mc10$BIC[1],dat_mc11$BIC[1],dat_mc12$BIC[1])
-#plot BIC scores
-plot(c(9:12),BICs, pch=16, ylab="BIC Score",xlab="Number of Clusters", type='o')
+BICs<-c(m_VEI_8$BIC[1],m_VEE_8$BIC[1],m_VEI_9$BIC[1],m_VEE_9$BIC[1])
 #calculate change in BIC score, since in this method the goal to to maximize BIC
 #we calculate change from highest scoring model
 delta_BIC <- max(BICs) - BICs
 #calculate BIC weights
 w_BIC <- round(exp(-0.5*delta_BIC)/sum(exp(-0.5*delta_BIC)), digits=3)
 #make table of results
-results_table <- cbind.data.frame(clusters=c(9:12),BIC=BICs,delta_BIC,weight=w_BIC)
+results_table <- cbind.data.frame(clusters=c("VEI_8","VEE_8","VEI_9","VEE_9"),BIC=BICs,delta_BIC,weight=w_BIC)
 #order by delta
 results_table <- results_table[order(delta_BIC),] 
 rownames(results_table)<-NULL
@@ -93,9 +152,9 @@ kable(results_table[1:4], caption = "Model Comparison")
 
 # Extract and map cluster classifications
 ```{r}
-#extract classifications, e.g., which MSA belongs to which cluster, write to CSV
-write.csv(dat_mc10$classification,file=here("results/cluster_assignment.csv"))
-data<-read.csv("results/cluster_assignment.csv")
+#extract classifications, e.g., which city belongs to which cluster, export to csv and reload
+write.csv(m_VEE_8$classification,file=here("results/cluster_assignment_pca.csv"))
+data<- read.csv(here('results/cluster_assignment_pca.csv'))
 
 #import shapefile
 msa_Boundary <-readOGR(here("data/MSA"),"tl_2015_us_cbsa") 
@@ -110,7 +169,7 @@ cluster_sf <- st_as_sf(merged_clean)
 #make us map
 us_map <- tm_shape(us_states) + tm_borders()
 #combine them
-cluster_map <- tm_shape(cluster_sf) + tm_fill(col="Cluster", palette="Spectral")
+cluster_map <- tm_shape(cluster_sf) + tm_fill(col="Cluster", palette="Set1")
 #plot them
 us_map + cluster_map
 ```
@@ -133,16 +192,14 @@ c5m <- data.frame(five=colMeans(subset(dat_clust, x=="5")[2:18]))
 c6m <- data.frame(six=colMeans(subset(dat_clust, x=="6")[2:18]))
 c7m <- data.frame(seven=colMeans(subset(dat_clust, x=="7")[2:18]))
 c8m <- data.frame(eight=colMeans(subset(dat_clust, x=="8")[2:18]))
-c9m <- data.frame(nine=colMeans(subset(dat_clust, x=="9")[2:18]))
-c10m <- data.frame(ten=colMeans(subset(dat_clust, x=="10")[2:18]))
-cluster_means <- cbind.data.frame(c1m,c2m,c3m,c4m,c5m,c6m,c7m,c8m, c9m, c10m)
+cluster_means <- cbind.data.frame(c1m,c2m,c3m,c4m,c5m,c6m,c7m,c8m)
 cluster_means$variable <- row.names(cluster_means)
 rownames(cluster_means) <- NULL
 ```
 
 ```{r, fig.width=30,fig.height=15}
 #boxplots of scores for clusters
-par(mfrow=c(2,5), mar=c(2.5,5,2.5,3))
+par(mfrow=c(2,4), mar=c(2.5,5,2.5,3))
 boxplot(subset(dat_clust, x=="1")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 1")
 boxplot(subset(dat_clust, x=="2")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 2")
 boxplot(subset(dat_clust, x=="3")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 3")
@@ -151,8 +208,6 @@ boxplot(subset(dat_clust, x=="5")[2:18], horizontal=T, las=1, ylim=c(-4,4), main
 boxplot(subset(dat_clust, x=="6")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 6")
 boxplot(subset(dat_clust, x=="7")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 7")
 boxplot(subset(dat_clust, x=="8")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 8")
-boxplot(subset(dat_clust, x=="9")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 9")
-boxplot(subset(dat_clust, x=="10")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 10")
 par(mfrow=c(1,1))
 ```
 
@@ -175,10 +230,6 @@ dotchart(cluster_means$seven, labels=cluster_means$variable,xlim=c(-2,2), main='
 abline(v=0, lwd=2)
 dotchart(cluster_means$eight, labels=cluster_means$variable,xlim=c(-2,2), main='Cluster 8', pch=16)
 abline(v=0, lwd=2)
-dotchart(cluster_means$nine, labels=cluster_means$variable,xlim=c(-2,2), main='Cluster 9', pch=16)
-abline(v=0, lwd=2)
-dotchart(cluster_means$ten, labels=cluster_means$variable,xlim=c(-2,2), main='Cluster 10', pch=16)
-abline(v=0, lwd=2)
 par(mfrow=c(1,1))
 ```
 
@@ -192,8 +243,6 @@ cluster5 <- data.frame(subset(dat_clust, x=="5"))
 cluster6 <- data.frame(subset(dat_clust, x=="6"))
 cluster7 <- data.frame(subset(dat_clust, x=="7"))
 cluster8 <- data.frame(subset(dat_clust, x=="8"))
-cluster9 <- data.frame(subset(dat_clust, x=="9"))
-cluster10 <- data.frame(subset(dat_clust, x=="10"))
 
 #function to compute smallest combined absolute difference from mean
 Average_MSA_inClust <- function(x) {
@@ -214,19 +263,15 @@ cluster5_average <- Average_MSA_inClust(cluster5)
 cluster6_average <- Average_MSA_inClust(cluster6)
 cluster7_average <- Average_MSA_inClust(cluster7)
 cluster8_average <- Average_MSA_inClust(cluster8)
-cluster9_average <- Average_MSA_inClust(cluster9)
-cluster10_average <- Average_MSA_inClust(cluster10)
 
-typical_members <- data.frame(Cluster=c(1:10), Name=c(cluster1_average$Name,
+typical_members <- data.frame(Cluster=c(1:8), Name=c(cluster1_average$Name,
                               cluster2_average$Name,
                               cluster3_average$Name,
                               cluster4_average$Name,
                               cluster5_average$Name,
                               cluster6_average$Name,
                               cluster7_average$Name,
-                              cluster8_average$Name,
-                              cluster9_average$Name,
-                              cluster10_average$Name))
+                              cluster8_average$Name))
 
 kable(typical_members, caption = "Typical members of each cluster")
 ```
@@ -237,7 +282,7 @@ kable(typical_members, caption = "Typical members of each cluster")
 #Most sustainable cluster
 
 #rotate columns and rows
-cluster_means_t <- cluster_means[1:10]
+cluster_means_t <- cluster_means[1:8]
 row.names(cluster_means_t) <- cluster_means$variable
 cluster_means_t <- data.frame(t(cluster_means_t))
 cluster_means_t$cluster <- row.names(cluster_means_t)
@@ -284,173 +329,47 @@ most_sustainable_clusters <- data.frame(Metric=c(colnames(cluster_means_t[c(1:4,
 kable(most_sustainable_clusters)
 ```
 
-
-# Examine cluster patterns with PCA
-
-## Note: adjusting values for variables so that high='good' and low='bad' for all variables
-```{r}
-dat_clust_adj <- dat_clust
-dat_clust_adj$Per_Poverty <- dat_clust$Per_Poverty * -1
-dat_clust_adj$Gini <- dat_clust$Gini * -1
-dat_clust_adj$Per_Sev_Hous <- dat_clust$Per_Sev_Hous * -1
-dat_clust_adj$Xstreamlengthimpaired <- dat_clust$Xstreamlengthimpaired * -1
-dat_clust_adj$poor_health_percent <- dat_clust$poor_health_percent * -1
-dat_clust_adj$Z_Water_Index <- dat_clust$Z_Water_Index * -1
-dat_clust_adj$Index_Black <- dat_clust$Index_Black * -1
-dat_clust_adj$Index_Asian <- dat_clust$Index_Asian * -1
-dat_clust_adj$Index_Latino <- dat_clust$Index_Latino * -1
-dat_clust_adj$GHG_Percap <- dat_clust$GHG_Percap * -1
-dat_clust_adj$UNEMPLOY <- dat_clust$UNEMPLOY * -1
-dat_clust_adj$FOOD_INS <- dat_clust$FOOD_INS * -1
-dat_clust_adj$VIO_CRIME <- dat_clust$VIO_CRIME * -1
-
-cluster1a <- data.frame(subset(dat_clust_adj, x=="1"))
-cluster2a <- data.frame(subset(dat_clust_adj, x=="2"))
-cluster3a <- data.frame(subset(dat_clust_adj, x=="3"))
-cluster4a <- data.frame(subset(dat_clust_adj, x=="4"))
-cluster5a <- data.frame(subset(dat_clust_adj, x=="5"))
-cluster6a <- data.frame(subset(dat_clust_adj, x=="6"))
-cluster7a <- data.frame(subset(dat_clust_adj, x=="7"))
-cluster8a <- data.frame(subset(dat_clust_adj, x=="8"))
-cluster9a <- data.frame(subset(dat_clust_adj, x=="9"))
-cluster10a <- data.frame(subset(dat_clust_adj, x=="10"))
+## Table showing which clusters score best and worst for different metrics
+```{r, }
+cluster_means_t %>%
+  kbl() %>%
+  kable_paper(full_width=T) %>%
+  #column_spec(1, color = ifelse(cluster_means_t$AQI_Good < max(cluster_means_t$AQI_Good), 'black','blue'))
+  column_spec(1, color = ifelse(cluster_means_t[,1] == max(cluster_means_t[,1]), "blue",
+                                   ifelse(cluster_means_t[,1] == min(cluster_means_t[,1]), "red", "black"))) %>%
+  column_spec(2, color = ifelse(cluster_means_t[,2] == max(cluster_means_t[,2]), "blue",
+                                   ifelse(cluster_means_t[,2] == min(cluster_means_t[,2]), "red", "black"))) %>%
+  column_spec(8, color = ifelse(cluster_means_t[,8] == max(cluster_means_t[,8]), "blue",
+                                   ifelse(cluster_means_t[,8] == min(cluster_means_t[,8]), "red", "black"))) %>%
+  column_spec(3, color = ifelse(cluster_means_t[,3] == max(cluster_means_t[,3]), "red",
+                                   ifelse(cluster_means_t[,3] == min(cluster_means_t[,3]), "blue", "black"))) %>%
+  column_spec(4, color = ifelse(cluster_means_t[,4] == max(cluster_means_t[,4]), "red",
+                                   ifelse(cluster_means_t[,4] == min(cluster_means_t[,4]), "blue", "black"))) %>%
+  column_spec(5, color = ifelse(cluster_means_t[,5] == max(cluster_means_t[,5]), "red",
+                                   ifelse(cluster_means_t[,5] == min(cluster_means_t[,5]), "blue", "black"))) %>%
+  column_spec(6, color = ifelse(cluster_means_t[,6] == max(cluster_means_t[,6]), "red",
+                                   ifelse(cluster_means_t[,6] == min(cluster_means_t[,6]), "blue", "black"))) %>%
+  column_spec(7, color = ifelse(cluster_means_t[,7] == max(cluster_means_t[,7]), "red",
+                                   ifelse(cluster_means_t[,7] == min(cluster_means_t[,7]), "blue", "black"))) %>%
+  column_spec(9, color = ifelse(cluster_means_t[,9] == max(cluster_means_t[,9]), "red",
+                                   ifelse(cluster_means_t[,9] == min(cluster_means_t[,9]), "blue", "black"))) %>%
+  column_spec(10, color = ifelse(cluster_means_t[,10] == max(cluster_means_t[,10]), "red",
+                                   ifelse(cluster_means_t[,10] == min(cluster_means_t[,10]), "blue", "black"))) %>%
+  column_spec(11, color = ifelse(cluster_means_t[,11] == max(cluster_means_t[,11]), "red",
+                                   ifelse(cluster_means_t[,11] == min(cluster_means_t[,11]), "blue", "black"))) %>%
+  column_spec(12, color = ifelse(cluster_means_t[,12] == max(cluster_means_t[,12]), "red",
+                                   ifelse(cluster_means_t[,12] == min(cluster_means_t[,12]), "blue", "black"))) %>%
+  column_spec(13, color = ifelse(cluster_means_t[,13] == max(cluster_means_t[,13]), "red",
+                                   ifelse(cluster_means_t[,13] == min(cluster_means_t[,13]), "blue", "black"))) %>%
+  column_spec(14, color = ifelse(cluster_means_t[,14] == max(cluster_means_t[,14]), "red",
+                                   ifelse(cluster_means_t[,14] == min(cluster_means_t[,14]), "blue", "black"))) %>%
+  column_spec(15, color = ifelse(cluster_means_t[,15] == max(cluster_means_t[,15]), "red",
+                                   ifelse(cluster_means_t[,15] == min(cluster_means_t[,15]), "blue", "black"))) %>%
+  column_spec(16, color = ifelse(cluster_means_t[,16] == max(cluster_means_t[,16]), "red",
+                                   ifelse(cluster_means_t[,16] == min(cluster_means_t[,16]), "blue", "black"))) %>%
+  column_spec(17, color = ifelse(cluster_means_t[,17] == max(cluster_means_t[,17]), "red",
+                                   ifelse(cluster_means_t[,17] == min(cluster_means_t[,17]), "blue", "black")))
+  
 ```
 
-## Perform PCA on individual clusters
-
-```{r,fig.width=12,fig.height=8}
-#PCA cluster 1
-c1_PCA <- pca(cluster1a[2:18],transposed = T) #rotate table and only use numeric columns
-#scree plot
-screeplot(c1_PCA, title="Scree plot Cluster 1") 
-#elbow method of estimating important components
-findElbowPoint(c1_PCA$variance) 
-#biplot for PC1 and PC2
-biplot(c1_PCA, showLoadings = T, showLoadingsNames = T, hline=0,vline=0, title='Cluster 1')
-#loadings for components
-plotloadings(c1_PCA, title="Cluster 1")
-```
-
-```{r, fig.width=12, fig.height=8}
-#PCA cluster 2
-c2_PCA <- pca(cluster2a[2:18],transposed = T)
-screeplot(c2_PCA)
-findElbowPoint(c2_PCA$variance)
-biplot(c2_PCA, showLoadings = T, showLoadingsNames = T, hline=0,vline=0, title='Cluster 2')
-plotloadings(c2_PCA, title="Cluster 2")
-
-#PCA cluster 3
-c3_PCA <- pca(cluster3a[2:18],transposed = T)
-screeplot(c3_PCA)
-findElbowPoint(c3_PCA$variance)
-biplot(c3_PCA, showLoadings = T, showLoadingsNames = T, hline=0,vline=0, title='Cluster 3')
-plotloadings(c3_PCA, title="Cluster 3")
-
-#PCA cluster 4
-c4_PCA <- pca(cluster4a[2:18],transposed = T)
-screeplot(c4_PCA)
-findElbowPoint(c4_PCA$variance)
-biplot(c4_PCA, showLoadings = T, showLoadingsNames = T, hline=0,vline=0, title='Cluster 4')
-plotloadings(c4_PCA, title="Cluster 4")
-
-#PCA cluster 5
-c5_PCA <- pca(cluster5a[2:18],transposed = T)
-screeplot(c5_PCA)
-findElbowPoint(c5_PCA$variance)
-biplot(c5_PCA, showLoadings = T, showLoadingsNames = T, hline=0,vline=0, title='Cluster 5')
-plotloadings(c5_PCA, title="Cluster 5")
-
-#PCA cluster 6
-c6_PCA <- pca(cluster6a[2:18],transposed = T)
-screeplot(c6_PCA)
-findElbowPoint(c6_PCA$variance)
-biplot(c6_PCA, showLoadings = T, showLoadingsNames = T, hline=0,vline=0, title='Cluster 6')
-plotloadings(c6_PCA, title="Cluster 6")
-
-#PCA cluster 7
-c7_PCA <- pca(cluster7a[2:18],transposed = T)
-screeplot(c7_PCA)
-findElbowPoint(c7_PCA$variance)
-biplot(c7_PCA, showLoadings = T, showLoadingsNames = T, hline=0,vline=0, title='Cluster 7')
-plotloadings(c7_PCA, title="Cluster 7")
-
-#PCA cluster 8
-c8_PCA <- pca(cluster8a[2:18],transposed = T)
-screeplot(c8_PCA)
-findElbowPoint(c8_PCA$variance)
-biplot(c8_PCA, showLoadings = T, showLoadingsNames = T, hline=0,vline=0, title='Cluster 8')
-plotloadings(c8_PCA, title="Cluster 8")
-
-#PCA cluster 9
-c9_PCA <- pca(cluster9a[2:18],transposed = T)
-screeplot(c9_PCA)
-findElbowPoint(c9_PCA$variance)
-biplot(c9_PCA, showLoadings = T, showLoadingsNames = T, hline=0,vline=0, title='Cluster 9')
-plotloadings(c9_PCA, title="Cluster 9")
-
-#PCA cluster 10
-c10_PCA <- pca(cluster10a[2:18],transposed = T)
-screeplot(c10_PCA)
-findElbowPoint(c10_PCA$variance)
-biplot(c10_PCA, showLoadings = T, showLoadingsNames = T, hline=0,vline=0, title='Cluster 10')
-plotloadings(c10_PCA, title="Cluster 10")
-```
-
-
-
-# Dimension reduction
-```{r, fig.width=6,fig.height=4}
-#run discriminant analysis on clusters
-DR <- MclustDR(dat_mc10, lambda = 1) #setting lambda to 1 gives most separating directions
-summary(DR)
-
-#plot eigenvalues
-plot(c(1:17),DR$evalues,ylab="eigenvalues", xlab="component", type="o", pch=16)
-
-```
-
-```{r, fig.width=30,fig.height=15}
-#plot all pairs of combinations
-plot(DR, what='pairs',symbols=c("1","2","3","4","5","6","7","8","9","10"),
-     colors=c("red","blue","green","goldenrod2","violet","brown","black","grey30","slateblue2","seagreen3"))
-```
-
-```{r, fig.width=15,fig.height=10}
-#plot directions for variables
-Directions <- data.frame(d1=DR$basis[,1],d2=DR$basis[,2],
-                         d3=DR$basis[,3],d4=DR$basis[,4],
-                         d5=DR$basis[,5],d6=DR$basis[,6],
-                         d7=DR$basis[,7],d8=DR$basis[,8],
-                         d9=DR$basis[,9],var=rownames(DR$basis))
-
-par(mfrow=c(3,3))
-dotchart(Directions$d1, labels=Directions$var, pch=16, main="Dir1", xlim=c(-0.6,0.6))
-abline(v=0, lwd=2)
-abline(v=c(0.1,-0.1),lty=2)
-dotchart(Directions$d2, labels=Directions$var, pch=16, main="Dir2", xlim=c(-0.6,0.6))
-abline(v=0, lwd=2)
-abline(v=c(0.1,-0.1),lty=2)
-dotchart(Directions$d3, labels=Directions$var, pch=16, main="Dir3", xlim=c(-0.6,0.6))
-abline(v=0, lwd=2)
-abline(v=c(0.1,-0.1),lty=2)
-dotchart(Directions$d4, labels=Directions$var, pch=16, main="Dir4", xlim=c(-0.6,0.6))
-abline(v=0, lwd=2)
-abline(v=c(0.1,-0.1),lty=2)
-dotchart(Directions$d5, labels=Directions$var, pch=16, main="Dir5", xlim=c(-0.6,0.6))
-abline(v=0, lwd=2)
-abline(v=c(0.1,-0.1),lty=2)
-dotchart(Directions$d6, labels=Directions$var, pch=16, main="Dir6", xlim=c(-0.6,0.6))
-abline(v=0, lwd=2)
-abline(v=c(0.1,-0.1),lty=2)
-dotchart(Directions$d7, labels=Directions$var, pch=16, main="Dir7", xlim=c(-0.6,0.6))
-abline(v=0, lwd=2)
-abline(v=c(0.1,-0.1),lty=2)
-dotchart(Directions$d8, labels=Directions$var, pch=16, main="Dir8", xlim=c(-0.6,0.6))
-abline(v=0, lwd=2)
-abline(v=c(0.1,-0.1),lty=2)
-dotchart(Directions$d9, labels=Directions$var, pch=16, main="Dir9", xlim=c(-0.6,0.6))
-abline(v=0, lwd=2)
-abline(v=c(0.1,-0.1),lty=2)
-par(mfrow=c(1,1))
-```
 
