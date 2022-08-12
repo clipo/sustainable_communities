@@ -2,7 +2,9 @@
 title: "MSA Cluster Modeling"
 author: "Robert J. DiNapoli"
 date: "9/21/2021"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -31,7 +33,7 @@ library(kableExtra)
 ```{r, results='hide', message=FALSE}
 
 #import raw data
-dat_raw <- read.csv(here("data/CommunityData-raw-2015.csv"))
+dat_raw <- read.csv(here("data/CommunityData-raw-2015-v2.csv"))
 #select columns of interest, removed co2_hhs
 dat  <- dat_raw[,c(4:12,14:21)]
 #convert to dataframe
@@ -298,14 +300,16 @@ best_stream <- cluster_means_t[which.min(cluster_means_t$Xstreamlengthimpaired),
 best_land <- cluster_means_t[which.max(cluster_means_t$Per_Avg_Land_Cov),]
 best_health <- cluster_means_t[which.min(cluster_means_t$poor_health_percent),]
 best_water <- cluster_means_t[which.min(cluster_means_t$Z_Water_Index),]
-low_index_black <- cluster_means_t[which.min(cluster_means_t$Index_Black),]
-low_index_asian <- cluster_means_t[which.min(cluster_means_t$Index_Asian),]
-low_index_latino <- cluster_means_t[which.min(cluster_means_t$Index_Latino),]
+low_index_black <- cluster_means_t[which.min(cluster_means_t$Black_equality),]
+low_index_asian <- cluster_means_t[which.min(cluster_means_t$Asian_equality),]
+low_index_latino <- cluster_means_t[which.min(cluster_means_t$Hisspanic_equality),]
 best_emissions <- cluster_means_t[which.min(cluster_means_t$GHG_Percap),]
 best_employmet <- cluster_means_t[which.min(cluster_means_t$UNEMPLOY),]
 best_food <- cluster_means_t[which.min(cluster_means_t$FOOD_INS),]
 best_crime <- cluster_means_t[which.min(cluster_means_t$VIO_CRIME),]
-
+best_migration <-cluster_means_t[which.min(cluster_means_t$non_migration),]
+best_broadband <-cluster_means_t[which.min(cluster_means_t$broadband_access),]
+best_female <-cluster_means_t[which.min(cluster_means_t$Female_Inequality),]
 
 most_sustainable_clusters <- data.frame(Metric=c(colnames(cluster_means_t[c(1:4,6:17)])),
                                         Cluster=c(
@@ -324,7 +328,10 @@ most_sustainable_clusters <- data.frame(Metric=c(colnames(cluster_means_t[c(1:4,
                                         best_emissions$cluster,
                                         best_employmet$cluster,
                                         best_food$cluster,
-                                        best_crime$cluster))
+                                        best_crime$cluster,
+                                        best_female$cluster,
+                                        best_broadband$cluster,
+                                        best_migration$cluster))
 
 kable(most_sustainable_clusters)
 ```
