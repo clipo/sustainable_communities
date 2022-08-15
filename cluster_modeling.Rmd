@@ -3,9 +3,9 @@ title: "MSA Cluster Modeling"
 author: "Robert J. DiNapoli"
 date: "9/21/2021"
 output:
-  html_document: default
-  word_document: default
   pdf_document: default
+  word_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -106,7 +106,14 @@ l.pos <- replace(l.pos, lo, "1")
 l.pos <- replace(l.pos, hi, "3")
 text(l.x, l.y, labels=row.names(dat_comps$rotation), col="black", pos=l.pos, cex=1.25)
 ```
-
+## Summary of PC loadings
+```{r}
+library(broom)
+print(dat_comps)
+summary(dat_comps)
+# information about PCs
+tidy(dat_comps, "pcs")
+```
 
 # Run Cluster GMM
 
