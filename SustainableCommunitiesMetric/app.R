@@ -15,8 +15,8 @@ library("rgdal")
 library("sp")
 
 msa_Boundary <-readOGR(".","simplified_MSA") 
-data<-read.csv("cluster_assignment.csv")
-merged <- merge(msa_Boundary,data,by.x="NAME",by.y="X")
+data<-read.csv("cluster_assignment_pca.csv")
+merged <- merge(msa_Boundary,data,by.x="NAME",by.y="NAME")
 pal <- colorFactor(rainbow(10), merged$x,
                    na.color = "transparent")
 p_popup <- paste0("<strong>Community: </strong>", merged$NAME)
