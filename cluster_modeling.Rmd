@@ -3,8 +3,9 @@ title: "MSA Cluster Modeling"
 author: "Robert J. DiNapoli"
 date: "9/21/2021"
 output:
-  pdf_document: default
   html_document: default
+  word_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -127,7 +128,7 @@ summary(dat_pcs_mc)
 #plot BIC scores of different models
 plot(dat_pcs_mc, what='BIC')
 #zoom in on best-fitting models
-plot(dat_pcs_mc, what='BIC', ylim=c(-15300,-15150))
+plot(dat_pcs_mc, what='BIC', ylim=c(-14500,-14000))
 
 #model type VEI and VEE have similar BIC scores for 8-9 clusters
 #do additional model comparisons
