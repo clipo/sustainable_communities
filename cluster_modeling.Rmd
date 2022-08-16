@@ -1,7 +1,7 @@
 ---
 title: "MSA Cluster Modeling"
 author: "Robert J. DiNapoli"
-date: "9/21/2021"
+date: "8/16/2022"
 output:
   pdf_document: default
   word_document: default
@@ -35,8 +35,8 @@ library(kableExtra)
 
 #import raw data
 dat_raw <- read.csv(here("data/CommunityData-raw-2015-v2.csv"))
-#select columns of interest, removed co2_hhs
-dat  <- dat_raw[,c(4:12,14:21)]
+#select columns of interest, for this run remove asian_equality and female_equality
+dat  <- dat_raw[,c(4:18,20:21)]
 #convert to dataframe
 dat <- as.data.frame(unclass(dat))
 #set rownames to city names
@@ -54,6 +54,7 @@ dat_comps <- prcomp(dat, center = F, scale=F) #set center and scale to FALSE bec
 s <- summary(dat_comps)
 kable(s$importance)
 #get eigenvalues
+#### change this # of columsn to match
 ev <- data.frame(Component=paste("PC",1:17, sep=""),eigenvalue=dat_comps$sdev^2)
 kable(ev)
 ```
@@ -319,7 +320,7 @@ best_migration <-cluster_means_t[which.min(cluster_means_t$non_migration),]
 best_broadband <-cluster_means_t[which.min(cluster_means_t$broadband_access),]
 best_female <-cluster_means_t[which.min(cluster_means_t$Female_Inequality),]
 
-most_sustainable_clusters <- data.frame(Metric=c(colnames(cluster_means_t[c(1:4,6:17)])),
+most_sustainable_clusters <- data.frame(Metric=c(colnames(cluster_means_t[c(1:16)])),
                                         Cluster=c(
                                         best_air$cluster,
                                         best_edu$cluster,
