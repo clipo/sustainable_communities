@@ -29,7 +29,7 @@ server <- function(input, output, session) {
   
   output$mymap <- renderLeaflet({
     leaflet(merged ) %>%
-      setView(lat=37.0902, lng=-95.7129,zoom=2)%>%
+      setView(lat=37.0902, lng=-95.7129,zoom=4)%>%
       addPolygons(
         stroke = FALSE, # remove polygon borders
         fillColor = ~pal(x), # set fill color with function from above and value
