@@ -57,6 +57,11 @@ kable(s$importance)
 #### change this # of columsn to match
 ev <- data.frame(Component=paste("PC",1:17, sep=""),eigenvalue=dat_comps$sdev^2)
 kable(ev)
+
+#write to CSV
+write.csv(dat_comps$x,file=here("results/community_loadings.csv"))
+
+
 ```
 
 ## Extract components with eigenvalues > 1
