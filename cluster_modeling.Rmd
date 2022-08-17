@@ -54,7 +54,7 @@ dat_comps <- prcomp(dat, center = F, scale=F) #set center and scale to FALSE bec
 s <- summary(dat_comps)
 kable(s$importance)
 #get eigenvalues
-#### change this # of columsn to match
+#### change this # of columns to match
 ev <- data.frame(Component=paste("PC",1:17, sep=""),eigenvalue=dat_comps$sdev^2)
 kable(ev)
 
@@ -134,7 +134,14 @@ Assumptions: - MSAs form clusters characterized by a multivariate distribution
 dat_pcs_mc <- Mclust(dat_pcs, G=c(1:20))
 #print summary of model fit
 summary(dat_pcs_mc)
+```
 
+Cluster assignments
+```{r}
+plot(dat_pcs_mc, what = c("classification"))
+```
+Uncertainty in assignments
+```{r}
 write.csv(dat_pcs_mc$uncertainty,file=here("results/community_group_uncertainty.csv"))
 plot(dat_pcs_mc, what = "uncertainty")
 uncerPlot(z = dat_pcs_mc$z)
@@ -145,35 +152,52 @@ uncerPlot(z = dat_pcs_mc$z)
 #plot BIC scores of different models
 plot(dat_pcs_mc, what='BIC')
 #zoom in on best-fitting models
-plot(dat_pcs_mc, what='BIC', ylim=c(-14500,-14000))
+plot(dat_pcs_mc, what='BIC', ylim=c(-15200,-14600))
 
 #model type VEI and VEE have similar BIC scores for 8-9 clusters
 #do additional model comparisons
 m_VEI_8 <- Mclust(dat_pcs, G=8, modelNames="VEI")
 m_VEE_8 <- Mclust(dat_pcs, G=8, modelNames="VEE")
 m_VEI_9 <- Mclust(dat_pcs, G=9, modelNames="VEI")
+m_VEI_10 <- Mclust(dat_pcs, G=10, modelNames="VEI")
+m_VEI_11 <- Mclust(dat_pcs, G=11, modelNames="VEI")
 m_VEE_9 <- Mclust(dat_pcs, G=9, modelNames="VEE")
-
+m_VEE_10 <- Mclust(dat_pcs, G=10, modelNames="VEE")
+m_VEE_11 <- Mclust(dat_pcs, G=11, modelNames="VEE")
 #extract BIC scores
-BICs<-c(m_VEI_8$BIC[1],m_VEE_8$BIC[1],m_VEI_9$BIC[1],m_VEE_9$BIC[1])
+BICs<-c(m_VEI_8$BIC[1],m_VEE_8$BIC[1],m_VEI_9$BIC[1],m_VEE_9$BIC[1],m_VEE_10$BIC[1],m_VEE_11$BIC[1],m_VEI_10$BIC[1],m_VEI_11$BIC[1])
 #calculate change in BIC score, since in this method the goal to to maximize BIC
 #we calculate change from highest scoring model
 delta_BIC <- max(BICs) - BICs
 #calculate BIC weights
 w_BIC <- round(exp(-0.5*delta_BIC)/sum(exp(-0.5*delta_BIC)), digits=3)
 #make table of results
-results_table <- cbind.data.frame(clusters=c("VEI_8","VEE_8","VEI_9","VEE_9"),BIC=BICs,delta_BIC,weight=w_BIC)
+results_table <- cbind.data.frame(clusters=c("VEI_8","VEE_8","VEI_9","VEE_9","VEI_10","VEE_10","VEI_11","VEE_11"),BIC=BICs,delta_BIC,weight=w_BIC)
 #order by delta
 results_table <- results_table[order(delta_BIC),] 
 rownames(results_table)<-NULL
 #print table
 kable(results_table[1:4], caption = "Model Comparison")
+
+## providing some output about the model. It seems that VEI is the best model. But how many clusters? 11? or 8?
+
+output <- clustCombi(data = dat_pcs, modelName = "VEI", G = 11)
+# plot the hierarchy of combined solutions
+plot(output, what = "classification")
+# plot some "entropy plots" which may help one to select the number of classes
+plot(output, what = "entropy")
+# plot the tree structure obtained from combining mixture components
+plot(output, what = "tree")
+head( output$combiz[[output$MclustOutput$G]] )
+
+## output the probabilities by cluster.
+write.csv(output$combiz[[output$MclustOutput$G]],file=here("results/cluster_probabilities.csv"))
 ```
 
 # Extract and map cluster classifications
 ```{r}
 #extract classifications, e.g., which city belongs to which cluster, export to csv and reload
-write.csv(m_VEE_8$classification,file=here("results/cluster_assignment_pca.csv"))
+write.csv(m_VEI_11$classification,file=here("results/cluster_assignment_pca.csv"))
 data<- read.csv(here('results/cluster_assignment_pca.csv'))
 
 #import shapefile
