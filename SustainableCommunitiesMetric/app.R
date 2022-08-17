@@ -36,7 +36,7 @@ server <- function(input, output, session) {
         fillOpacity = 0.8, smoothFactor = 0.5, # make it nicer
         popup = p_popup) %>%
       addTiles() %>%
-      addLegend("bottomleft",pal = pal, values = c(1,2,3,4,5,6,7,8), 
+      addLegend("bottomleft",pal = pal, values = c(1,2,3,4,5,6,7,8,9,10,11), 
                 layerId = "colorLegend", title="Cluster")
   })
 }

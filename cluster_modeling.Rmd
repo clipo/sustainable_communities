@@ -3,9 +3,9 @@ title: "MSA Cluster Modeling"
 author: "Robert J. DiNapoli"
 date: "8/16/2022"
 output:
-  pdf_document: default
-  word_document: default
   html_document: default
+  word_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -197,6 +197,9 @@ write.csv(output$combiz[[output$MclustOutput$G]],file=here("results/cluster_prob
 # Extract and map cluster classifications
 ```{r}
 #extract classifications, e.g., which city belongs to which cluster, export to csv and reload
+
+## currently the VEI with 11 clusters is the best model.
+
 write.csv(m_VEI_11$classification,file=here("results/cluster_assignment_pca.csv"))
 data<- read.csv(here('results/cluster_assignment_pca.csv'))
 
@@ -236,7 +239,10 @@ c5m <- data.frame(five=colMeans(subset(dat_clust, x=="5")[2:18]))
 c6m <- data.frame(six=colMeans(subset(dat_clust, x=="6")[2:18]))
 c7m <- data.frame(seven=colMeans(subset(dat_clust, x=="7")[2:18]))
 c8m <- data.frame(eight=colMeans(subset(dat_clust, x=="8")[2:18]))
-cluster_means <- cbind.data.frame(c1m,c2m,c3m,c4m,c5m,c6m,c7m,c8m)
+c9m <- data.frame(nine=colMeans(subset(dat_clust, x=="9")[2:18]))
+c10m <- data.frame(ten=colMeans(subset(dat_clust, x=="10")[2:18]))
+c11m <- data.frame(eleven=colMeans(subset(dat_clust, x=="11")[2:18]))
+cluster_means <- cbind.data.frame(c1m,c2m,c3m,c4m,c5m,c6m,c7m,c8m,c9m,c10m,c11m)
 cluster_means$variable <- row.names(cluster_means)
 rownames(cluster_means) <- NULL
 ```
@@ -252,6 +258,9 @@ boxplot(subset(dat_clust, x=="5")[2:18], horizontal=T, las=1, ylim=c(-4,4), main
 boxplot(subset(dat_clust, x=="6")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 6")
 boxplot(subset(dat_clust, x=="7")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 7")
 boxplot(subset(dat_clust, x=="8")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 8")
+boxplot(subset(dat_clust, x=="9")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 9")
+boxplot(subset(dat_clust, x=="10")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 10")
+boxplot(subset(dat_clust, x=="11")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 11")
 par(mfrow=c(1,1))
 ```
 
@@ -274,6 +283,12 @@ dotchart(cluster_means$seven, labels=cluster_means$variable,xlim=c(-2,2), main='
 abline(v=0, lwd=2)
 dotchart(cluster_means$eight, labels=cluster_means$variable,xlim=c(-2,2), main='Cluster 8', pch=16)
 abline(v=0, lwd=2)
+dotchart(cluster_means$nine, labels=cluster_means$variable,xlim=c(-2,2), main='Cluster 9', pch=16)
+abline(v=0, lwd=2)
+dotchart(cluster_means$ten, labels=cluster_means$variable,xlim=c(-2,2), main='Cluster 10', pch=16)
+abline(v=0, lwd=2)
+dotchart(cluster_means$eleven, labels=cluster_means$variable,xlim=c(-2,2), main='Cluster 11', pch=16)
+abline(v=0, lwd=2)
 par(mfrow=c(1,1))
 ```
 
@@ -287,6 +302,9 @@ cluster5 <- data.frame(subset(dat_clust, x=="5"))
 cluster6 <- data.frame(subset(dat_clust, x=="6"))
 cluster7 <- data.frame(subset(dat_clust, x=="7"))
 cluster8 <- data.frame(subset(dat_clust, x=="8"))
+cluster9 <- data.frame(subset(dat_clust, x=="9"))
+cluster10 <- data.frame(subset(dat_clust, x=="10"))
+cluster11 <- data.frame(subset(dat_clust, x=="11"))
 
 #function to compute smallest combined absolute difference from mean
 Average_MSA_inClust <- function(x) {
@@ -307,15 +325,20 @@ cluster5_average <- Average_MSA_inClust(cluster5)
 cluster6_average <- Average_MSA_inClust(cluster6)
 cluster7_average <- Average_MSA_inClust(cluster7)
 cluster8_average <- Average_MSA_inClust(cluster8)
-
-typical_members <- data.frame(Cluster=c(1:8), Name=c(cluster1_average$Name,
+cluster9_average <- Average_MSA_inClust(cluster9)
+cluster10_average <- Average_MSA_inClust(cluster10)
+cluster11_average <- Average_MSA_inClust(cluster11)
+typical_members <- data.frame(Cluster=c(1:11), Name=c(cluster1_average$Name,
                               cluster2_average$Name,
                               cluster3_average$Name,
                               cluster4_average$Name,
                               cluster5_average$Name,
                               cluster6_average$Name,
                               cluster7_average$Name,
-                              cluster8_average$Name))
+                              cluster8_average$Name,
+                              cluster9_average$Name,
+                              cluster10_average$Name,
+                              cluster11_average$Name))
 
 kable(typical_members, caption = "Typical members of each cluster")
 ```
@@ -326,7 +349,7 @@ kable(typical_members, caption = "Typical members of each cluster")
 #Most sustainable cluster
 
 #rotate columns and rows
-cluster_means_t <- cluster_means[1:8]
+cluster_means_t <- cluster_means[1:11]
 row.names(cluster_means_t) <- cluster_means$variable
 cluster_means_t <- data.frame(t(cluster_means_t))
 cluster_means_t$cluster <- row.names(cluster_means_t)
@@ -343,7 +366,7 @@ best_land <- cluster_means_t[which.max(cluster_means_t$Per_Avg_Land_Cov),]
 best_health <- cluster_means_t[which.min(cluster_means_t$poor_health_percent),]
 best_water <- cluster_means_t[which.min(cluster_means_t$Z_Water_Index),]
 low_index_black <- cluster_means_t[which.min(cluster_means_t$Black_equality),]
-low_index_asian <- cluster_means_t[which.min(cluster_means_t$Asian_equality),]
+#low_index_asian <- cluster_means_t[which.min(cluster_means_t$Asian_equality),]
 low_index_latino <- cluster_means_t[which.min(cluster_means_t$Hisspanic_equality),]
 best_emissions <- cluster_means_t[which.min(cluster_means_t$GHG_Percap),]
 best_employmet <- cluster_means_t[which.min(cluster_means_t$UNEMPLOY),]
@@ -351,7 +374,7 @@ best_food <- cluster_means_t[which.min(cluster_means_t$FOOD_INS),]
 best_crime <- cluster_means_t[which.min(cluster_means_t$VIO_CRIME),]
 best_migration <-cluster_means_t[which.min(cluster_means_t$non_migration),]
 best_broadband <-cluster_means_t[which.min(cluster_means_t$broadband_access),]
-best_female <-cluster_means_t[which.min(cluster_means_t$Female_Inequality),]
+#best_female <-cluster_means_t[which.min(cluster_means_t$Female_Inequality),]
 
 most_sustainable_clusters <- data.frame(Metric=c(colnames(cluster_means_t[c(1:16)])),
                                         Cluster=c(
@@ -365,13 +388,13 @@ most_sustainable_clusters <- data.frame(Metric=c(colnames(cluster_means_t[c(1:16
                                         best_health$cluster,
                                         best_water$cluster,
                                         low_index_black$cluster,
-                                        low_index_asian$cluster,
+                                        #low_index_asian$cluster,
                                         low_index_latino$cluster,
                                         best_emissions$cluster,
                                         best_employmet$cluster,
                                         best_food$cluster,
                                         best_crime$cluster,
-                                        best_female$cluster,
+                                        #best_female$cluster,
                                         best_broadband$cluster,
                                         best_migration$cluster))
 
