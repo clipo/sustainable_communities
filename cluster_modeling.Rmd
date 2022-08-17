@@ -134,6 +134,10 @@ Assumptions: - MSAs form clusters characterized by a multivariate distribution
 dat_pcs_mc <- Mclust(dat_pcs, G=c(1:20))
 #print summary of model fit
 summary(dat_pcs_mc)
+
+write.csv(dat_pcs_mc$uncertainty,file=here("results/community_group_uncertainty.csv"))
+plot(dat_pcs_mc, what = "uncertainty")
+uncerPlot(z = dat_pcs_mc$z)
 ```
 
 # Model comparison
