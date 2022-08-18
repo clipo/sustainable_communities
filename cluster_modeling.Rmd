@@ -180,8 +180,9 @@ rownames(results_table)<-NULL
 kable(results_table[1:4], caption = "Model Comparison")
 
 ## providing some output about the model. It seems that VEI is the best model. But how many clusters? 11? or 8?
+## MODEL CHOSEN FOR REST OF ANALYSES
 
-output <- clustCombi(data = dat_pcs, modelName = "VEI", G = 11)
+output <- clustCombi(data = dat_pcs, modelName = "VEE", G = 11)
 # plot the hierarchy of combined solutions
 plot(output, what = "classification")
 # plot some "entropy plots" which may help one to select the number of classes
@@ -198,9 +199,10 @@ write.csv(output$combiz[[output$MclustOutput$G]],file=here("results/cluster_prob
 ```{r}
 #extract classifications, e.g., which city belongs to which cluster, export to csv and reload
 
-## currently the VEI with 11 clusters is the best model.
+### Change this value to pick a diffreent model
+## currently the VEE with 11 clusters is the best model.
 
-write.csv(m_VEI_11$classification,file=here("results/cluster_assignment_pca.csv"))
+write.csv(m_VEE_11$classification,file=here("results/cluster_assignment_pca.csv"))
 data<- read.csv(here('results/cluster_assignment_pca.csv'))
 
 #import shapefile
