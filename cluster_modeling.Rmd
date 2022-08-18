@@ -3,9 +3,9 @@ title: "MSA Cluster Modeling"
 author: "Robert J. DiNapoli"
 date: "8/16/2022"
 output:
-  html_document: default
-  word_document: default
   pdf_document: default
+  word_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -165,7 +165,7 @@ m_VEE_9 <- Mclust(dat_pcs, G=9, modelNames="VEE")
 m_VEE_10 <- Mclust(dat_pcs, G=10, modelNames="VEE")
 m_VEE_11 <- Mclust(dat_pcs, G=11, modelNames="VEE")
 #extract BIC scores
-BICs<-c(m_VEI_8$BIC[1],m_VEE_8$BIC[1],m_VEI_9$BIC[1],m_VEE_9$BIC[1],m_VEE_10$BIC[1],m_VEE_11$BIC[1],m_VEI_10$BIC[1],m_VEI_11$BIC[1])
+BICs<-c(m_VEI_8$BIC[1],m_VEE_8$BIC[1],m_VEI_9$BIC[1],m_VEE_9$BIC[1],m_VEI_10$BIC[1],m_VEE_10$BIC[1],m_VEI_11$BIC[1],m_VEE_11$BIC[1])
 #calculate change in BIC score, since in this method the goal to to maximize BIC
 #we calculate change from highest scoring model
 delta_BIC <- max(BICs) - BICs
@@ -182,7 +182,7 @@ kable(results_table[1:4], caption = "Model Comparison")
 ## providing some output about the model. It seems that VEI is the best model. But how many clusters? 11? or 8?
 ## MODEL CHOSEN FOR REST OF ANALYSES
 
-output <- clustCombi(data = dat_pcs, modelName = "VEE", G = 11)
+output <- clustCombi(data = dat_pcs, modelName = "VEI", G = 11)
 # plot the hierarchy of combined solutions
 plot(output, what = "classification")
 # plot some "entropy plots" which may help one to select the number of classes
@@ -199,10 +199,10 @@ write.csv(output$combiz[[output$MclustOutput$G]],file=here("results/cluster_prob
 ```{r}
 #extract classifications, e.g., which city belongs to which cluster, export to csv and reload
 
-### Change this value to pick a diffreent model
-## currently the VEE with 11 clusters is the best model.
+### Change this value to pick a different model
+## currently the best solution is VEI with 11 clusters.
 
-write.csv(m_VEE_11$classification,file=here("results/cluster_assignment_pca.csv"))
+write.csv(m_VEI_11$classification,file=here("results/cluster_assignment_pca.csv"))
 data<- read.csv(here('results/cluster_assignment_pca.csv'))
 
 #import shapefile
