@@ -1,22 +1,12 @@
 ---
-title: "MSA Cluster Modeling"
-author: "Robert J. DiNapoli"
-date: "8/16/2022"
-output:
-  pdf_document: default
-  word_document: default
-  html_document: default
+title: "Cluster Modeling"
+format: pdf
+editor: visual
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-library(tidyverse)
-library(palmerpenguins)
-```
-
-# Load Packages
-```{r, results='hide', message=FALSE}
+```{r echo=FALSE}
 library(here)
+library(broom)
 library(mclust)
 library(raster)
 library(rgdal)
@@ -32,8 +22,9 @@ library(knitr)
 library(kableExtra)
 ```
 
-# Import Data
-```{r, results='hide', message=FALSE}
+You can add options to executable code like this
+
+```{r echo=FALSE}
 
 #import raw data
 dat_raw <- read.csv(here("data/CommunityData-raw-2015-v2.csv"))
@@ -49,7 +40,8 @@ dat = na.omit(dat)
 dat <- as.matrix(scale(dat, center = TRUE, scale = TRUE))
 ```
 
-# Run PCA on dataset
+The `echo: false` option disables the printing of code (only output is displayed).
+
 ```{r}
 dat_comps <- prcomp(dat, center = F, scale=F) #set center and scale to FALSE because done pre-PCA
 #get summary
@@ -66,12 +58,14 @@ write.csv(dat_comps$x,file=here("results/community_loadings.csv"))
 
 ```
 
-## Extract components with eigenvalues > 1
+Extract components with eigenvalues \> 1
+
 ```{r}
 dat_pcs <- dat_comps$x[,1:5]
 ```
 
-## Plot loadings
+Plot loadings
+
 ```{r}
 #plot loadings of pc1 and 2
 plot(dat_comps$x[,1],dat_comps$x[,2], 
@@ -114,22 +108,28 @@ l.pos <- replace(l.pos, lo, "1")
 l.pos <- replace(l.pos, hi, "3")
 text(l.x, l.y, labels=row.names(dat_comps$rotation), col="black", pos=l.pos, cex=1.25)
 ```
-## Summary of PC loadings
+
+Summary of PC Loadings
+
 ```{r}
-library(broom)
+
 print(dat_comps)
 summary(dat_comps)
 # information about PCs
 tidy(dat_comps, "pcs")
 ```
 
-# Run Cluster GMM
+Run Cluster GMM
 
 Assumptions: - MSAs form clusters characterized by a multivariate distribution
-             - Model forms: shape, volume, orientation
-             - GMM fits a series of models with different forms and numbers of clusters
-             - Models with highest probability and fewest parameters selected as most optimal
-               - Based on Bayesian Information Criterion (BIC)
+
+-   Model forms: shape, volume, orientation
+
+-   GMM fits a series of models with different forms and numbers of clusters
+
+-   Models with highest probability and fewest parameters selected as most optimal
+
+-   Based on Bayesian Information Criterion (BIC)
 
 ```{r}
 #run GMM on 1-20 clusters
@@ -138,18 +138,22 @@ dat_pcs_mc <- Mclust(dat_pcs, G=c(1:20))
 summary(dat_pcs_mc)
 ```
 
-Cluster assignments
+Cluster Assignments
+
 ```{r}
 plot(dat_pcs_mc, what = c("classification"))
 ```
+
 Uncertainty in assignments
+
 ```{r}
 write.csv(dat_pcs_mc$uncertainty,file=here("results/community_group_uncertainty.csv"))
 plot(dat_pcs_mc, what = "uncertainty")
 uncerPlot(z = dat_pcs_mc$z)
 ```
 
-# Model comparison
+Model Comparisons
+
 ```{r}
 #plot BIC scores of different models
 plot(dat_pcs_mc, what='BIC')
@@ -181,7 +185,7 @@ rownames(results_table)<-NULL
 #print table
 kable(results_table[1:4], caption = "Model Comparison")
 
-## providing some output about the model. It seems that VEI 11 is the best model. 
+## providing some output about the model. It seems that VEI is the best model. But how many clusters? 11? or 8?
 ## MODEL CHOSEN FOR REST OF ANALYSES
 
 output <- clustCombi(data = dat_pcs, modelName = "VEI", G = 11)
@@ -197,13 +201,15 @@ head( output$combiz[[output$MclustOutput$G]] )
 write.csv(output$combiz[[output$MclustOutput$G]],file=here("results/cluster_probabilities.csv"))
 ```
 
-# Extract and map cluster classifications
+Map Classification Output
+
 ```{r}
 #extract classifications, e.g., which city belongs to which cluster, export to csv and reload
 
 ### Change this value to pick a different model
 ## currently the best solution is VEI with 11 clusters.
 
+#####NOTE THIS OUTPUT IS FOR VEI with 10 clusters ####
 write.csv(m_VEI_11$classification,file=here("results/cluster_assignment_pca.csv"))
 data<- read.csv(here('results/cluster_assignment_pca.csv'))
 
@@ -246,16 +252,16 @@ for (g in 1:dat_pcs_mc$G) {
   us_map <- tm_shape(us_states) + tm_borders()
   #combine them
   new_cluster_map <- tm_shape(cluster_sf)+tm_fill(col="Cluster", palette="Set1")
-
+#plot them
   #plot them
   print (us_map + new_cluster_map)
   #dev.off()#
 }
-
 ```
 
-# Examine how clusters score in different metrics
-```{r, results='hide',message=FALSE}
+Metrics for clusters
+
+```{r}
 #new data frame
 dat_clust <- as.data.frame(dat)
 #add names
@@ -280,7 +286,9 @@ cluster_means$variable <- row.names(cluster_means)
 rownames(cluster_means) <- NULL
 ```
 
-```{r, fig.width=30,fig.height=15}
+Box Plot of Scores
+
+```{r}
 #boxplots of scores for clusters
 par(mfrow=c(2,4), mar=c(2.5,5,2.5,3))
 boxplot(subset(dat_clust, x=="1")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 1")
@@ -297,7 +305,9 @@ boxplot(subset(dat_clust, x=="11")[2:18], horizontal=T, las=1, ylim=c(-4,4), mai
 par(mfrow=c(1,1))
 ```
 
-```{r, fig.width=30,fig.height=15}
+Dotplot of clusters
+
+```{r}
 #dotplots of cluster mean values
 par(mfrow=c(2,5))
 dotchart(cluster_means$one, labels=cluster_means$variable,xlim=c(-2,2), main='Cluster 1', pch=16)
@@ -324,157 +334,3 @@ dotchart(cluster_means$eleven, labels=cluster_means$variable,xlim=c(-2,2), main=
 abline(v=0, lwd=2)
 par(mfrow=c(1,1))
 ```
-
-# Which MSAs best characterize their cluster?
-```{r,echo=F}
-cluster1 <- data.frame(subset(dat_clust, x=="1"))
-cluster2 <- data.frame(subset(dat_clust, x=="2"))
-cluster3 <- data.frame(subset(dat_clust, x=="3"))
-cluster4 <- data.frame(subset(dat_clust, x=="4"))
-cluster5 <- data.frame(subset(dat_clust, x=="5"))
-cluster6 <- data.frame(subset(dat_clust, x=="6"))
-cluster7 <- data.frame(subset(dat_clust, x=="7"))
-cluster8 <- data.frame(subset(dat_clust, x=="8"))
-cluster9 <- data.frame(subset(dat_clust, x=="9"))
-cluster10 <- data.frame(subset(dat_clust, x=="10"))
-cluster11 <- data.frame(subset(dat_clust, x=="11"))
-
-#function to compute smallest combined absolute difference from mean
-Average_MSA_inClust <- function(x) {
-  output = data.frame(Name=x$ME)
-  for (i in 2:ncol(x)) {
-    output[[i]] <- abs(x[[i]] - mean(x[[i]]))
-  }
-  output$s_diff = rowSums(output[2:ncol(output)])
-  cluster_average = output[which.min(output$s_diff),]
-  return(cluster_average)
-}
-
-cluster1_average <- Average_MSA_inClust(cluster1)
-cluster2_average <- Average_MSA_inClust(cluster2)
-cluster3_average <- Average_MSA_inClust(cluster3)
-cluster4_average <- Average_MSA_inClust(cluster4)
-cluster5_average <- Average_MSA_inClust(cluster5)
-cluster6_average <- Average_MSA_inClust(cluster6)
-cluster7_average <- Average_MSA_inClust(cluster7)
-cluster8_average <- Average_MSA_inClust(cluster8)
-cluster9_average <- Average_MSA_inClust(cluster9)
-cluster10_average <- Average_MSA_inClust(cluster10)
-cluster11_average <- Average_MSA_inClust(cluster11)
-typical_members <- data.frame(Cluster=c(1:11), Name=c(cluster1_average$Name,
-                              cluster2_average$Name,
-                              cluster3_average$Name,
-                              cluster4_average$Name,
-                              cluster5_average$Name,
-                              cluster6_average$Name,
-                              cluster7_average$Name,
-                              cluster8_average$Name,
-                              cluster9_average$Name,
-                              cluster10_average$Name,
-                              cluster11_average$Name))
-
-kable(typical_members, caption = "Typical members of each cluster")
-```
-
-# Which cluster scores the best on the different metrics?
-```{r, echo=F}
-##########################
-#Most sustainable cluster
-
-#rotate columns and rows
-cluster_means_t <- cluster_means[1:11]
-row.names(cluster_means_t) <- cluster_means$variable
-cluster_means_t <- data.frame(t(cluster_means_t))
-cluster_means_t$cluster <- row.names(cluster_means_t)
-row.names(cluster_means_t) <- NULL
-
-#clusters scoring the best in the different metrics
-best_air <- cluster_means_t[which.max(cluster_means_t$AQI_Good),]
-best_edu <- cluster_means_t[which.max(cluster_means_t$Bachelor_Over_25),]
-best_pov <- cluster_means_t[which.min(cluster_means_t$Per_Poverty),]
-best_ineq <- cluster_means_t[which.min(cluster_means_t$Gini),]
-best_hous <- cluster_means_t[which.min(cluster_means_t$Per_Sev_Hous),]
-best_stream <- cluster_means_t[which.min(cluster_means_t$Xstreamlengthimpaired),]
-best_land <- cluster_means_t[which.max(cluster_means_t$Per_Avg_Land_Cov),]
-best_health <- cluster_means_t[which.min(cluster_means_t$poor_health_percent),]
-best_water <- cluster_means_t[which.min(cluster_means_t$Z_Water_Index),]
-low_index_black <- cluster_means_t[which.min(cluster_means_t$Black_equality),]
-#low_index_asian <- cluster_means_t[which.min(cluster_means_t$Asian_equality),]
-low_index_latino <- cluster_means_t[which.min(cluster_means_t$Hisspanic_equality),]
-best_emissions <- cluster_means_t[which.min(cluster_means_t$GHG_Percap),]
-best_employmet <- cluster_means_t[which.min(cluster_means_t$UNEMPLOY),]
-best_food <- cluster_means_t[which.min(cluster_means_t$FOOD_INS),]
-best_crime <- cluster_means_t[which.min(cluster_means_t$VIO_CRIME),]
-best_migration <-cluster_means_t[which.min(cluster_means_t$non_migration),]
-best_broadband <-cluster_means_t[which.min(cluster_means_t$broadband_access),]
-#best_female <-cluster_means_t[which.min(cluster_means_t$Female_Inequality),]
-
-most_sustainable_clusters <- data.frame(Metric=c(colnames(cluster_means_t[c(1:16)])),
-                                        Cluster=c(
-                                        best_air$cluster,
-                                        best_edu$cluster,
-                                        best_pov$cluster,
-                                        best_ineq$cluster,
-                                        best_hous$cluster,
-                                        best_stream$cluster,
-                                        best_land$cluster,
-                                        best_health$cluster,
-                                        best_water$cluster,
-                                        low_index_black$cluster,
-                                        #low_index_asian$cluster,
-                                        low_index_latino$cluster,
-                                        best_emissions$cluster,
-                                        best_employmet$cluster,
-                                        best_food$cluster,
-                                        best_crime$cluster,
-                                        #best_female$cluster,
-                                        best_broadband$cluster,
-                                        best_migration$cluster))
-
-kable(most_sustainable_clusters)
-```
-
-## Table showing which clusters score best and worst for different metrics
-```{r, }
-cluster_means_t %>%
-  kbl() %>%
-  kable_paper(full_width=T) %>%
-  #column_spec(1, color = ifelse(cluster_means_t$AQI_Good < max(cluster_means_t$AQI_Good), 'black','blue'))
-  column_spec(1, color = ifelse(cluster_means_t[,1] == max(cluster_means_t[,1]), "blue",
-                                   ifelse(cluster_means_t[,1] == min(cluster_means_t[,1]), "red", "black"))) %>%
-  column_spec(2, color = ifelse(cluster_means_t[,2] == max(cluster_means_t[,2]), "blue",
-                                   ifelse(cluster_means_t[,2] == min(cluster_means_t[,2]), "red", "black"))) %>%
-  column_spec(8, color = ifelse(cluster_means_t[,8] == max(cluster_means_t[,8]), "blue",
-                                   ifelse(cluster_means_t[,8] == min(cluster_means_t[,8]), "red", "black"))) %>%
-  column_spec(3, color = ifelse(cluster_means_t[,3] == max(cluster_means_t[,3]), "red",
-                                   ifelse(cluster_means_t[,3] == min(cluster_means_t[,3]), "blue", "black"))) %>%
-  column_spec(4, color = ifelse(cluster_means_t[,4] == max(cluster_means_t[,4]), "red",
-                                   ifelse(cluster_means_t[,4] == min(cluster_means_t[,4]), "blue", "black"))) %>%
-  column_spec(5, color = ifelse(cluster_means_t[,5] == max(cluster_means_t[,5]), "red",
-                                   ifelse(cluster_means_t[,5] == min(cluster_means_t[,5]), "blue", "black"))) %>%
-  column_spec(6, color = ifelse(cluster_means_t[,6] == max(cluster_means_t[,6]), "red",
-                                   ifelse(cluster_means_t[,6] == min(cluster_means_t[,6]), "blue", "black"))) %>%
-  column_spec(7, color = ifelse(cluster_means_t[,7] == max(cluster_means_t[,7]), "red",
-                                   ifelse(cluster_means_t[,7] == min(cluster_means_t[,7]), "blue", "black"))) %>%
-  column_spec(9, color = ifelse(cluster_means_t[,9] == max(cluster_means_t[,9]), "red",
-                                   ifelse(cluster_means_t[,9] == min(cluster_means_t[,9]), "blue", "black"))) %>%
-  column_spec(10, color = ifelse(cluster_means_t[,10] == max(cluster_means_t[,10]), "red",
-                                   ifelse(cluster_means_t[,10] == min(cluster_means_t[,10]), "blue", "black"))) %>%
-  column_spec(11, color = ifelse(cluster_means_t[,11] == max(cluster_means_t[,11]), "red",
-                                   ifelse(cluster_means_t[,11] == min(cluster_means_t[,11]), "blue", "black"))) %>%
-  column_spec(12, color = ifelse(cluster_means_t[,12] == max(cluster_means_t[,12]), "red",
-                                   ifelse(cluster_means_t[,12] == min(cluster_means_t[,12]), "blue", "black"))) %>%
-  column_spec(13, color = ifelse(cluster_means_t[,13] == max(cluster_means_t[,13]), "red",
-                                   ifelse(cluster_means_t[,13] == min(cluster_means_t[,13]), "blue", "black"))) %>%
-  column_spec(14, color = ifelse(cluster_means_t[,14] == max(cluster_means_t[,14]), "red",
-                                   ifelse(cluster_means_t[,14] == min(cluster_means_t[,14]), "blue", "black"))) %>%
-  column_spec(15, color = ifelse(cluster_means_t[,15] == max(cluster_means_t[,15]), "red",
-                                   ifelse(cluster_means_t[,15] == min(cluster_means_t[,15]), "blue", "black"))) %>%
-  column_spec(16, color = ifelse(cluster_means_t[,16] == max(cluster_means_t[,16]), "red",
-                                   ifelse(cluster_means_t[,16] == min(cluster_means_t[,16]), "blue", "black"))) %>%
-  column_spec(17, color = ifelse(cluster_means_t[,17] == max(cluster_means_t[,17]), "red",
-                                   ifelse(cluster_means_t[,17] == min(cluster_means_t[,17]), "blue", "black")))
-  
-```
-
-
