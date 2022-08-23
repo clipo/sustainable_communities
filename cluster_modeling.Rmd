@@ -202,7 +202,8 @@ write.csv(output$combiz[[output$MclustOutput$G]],file=here("results/cluster_prob
 ### Change this value to pick a different model
 ## currently the best solution is VEI with 11 clusters.
 
-write.csv(m_VEI_11$classification,file=here("results/cluster_assignment_pca.csv"))
+#####NOTE THIS OUTPUT IS FOR VEI with 10 clusters ####
+write.csv(m_VEI_10$classification,file=here("results/cluster_assignment_pca.csv"))
 data<- read.csv(here('results/cluster_assignment_pca.csv'))
 
 #import shapefile
@@ -221,6 +222,35 @@ us_map <- tm_shape(us_states) + tm_borders()
 cluster_map <- tm_shape(cluster_sf) + tm_fill(col="Cluster", palette="Set1")
 #plot them
 us_map + cluster_map
+
+
+## now show the distribution of each of the clusters one at a time
+## dat_pcs_mc$G is the number of clusters
+par(mfrow = c(6, 2))  # Set up a 2 x 2 plotting space
+output_map <- us_map
+library(svMisc)
+pb = txtProgressBar(min = 1, max = dat_pcs_mc$G, initial = 1)
+
+for (g in 1:dat_pcs_mc$G) {
+ setTxtProgressBar(pb,g)
+ subset_dat <-subset(data,x==g)
+  merged <- merge(msa_Boundary,subset_dat,by.x="NAME",by.y="X")
+  #remove any cases MSAs with no cluster assignments
+  merged_clean <- merged[!is.na(merged$x),]
+  #convert x to factor
+  merged_clean$Cluster <- as.factor(merged_clean$x)
+  #convert to sf object
+  cluster_sf <- st_as_sf(merged_clean)
+  #make us map
+  us_map <- tm_shape(us_states) + tm_borders()
+  #combine them
+  new_cluster_map <- tm_shape(cluster_sf)+tm_fill(col="Cluster", palette="Set1")
+#plot them
+  #plot them
+  print (us_map + new_cluster_map)
+  #dev.off()#
+}
+
 ```
 
 # Examine how clusters score in different metrics
