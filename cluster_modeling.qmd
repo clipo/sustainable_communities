@@ -4,7 +4,7 @@ format: pdf
 editor: visual
 ---
 
-```{r echo=FALSE}
+```{r load-libraries echo=FALSE}
 library(here)
 library(broom)
 library(mclust)
@@ -24,7 +24,7 @@ library(kableExtra)
 
 You can add options to executable code like this
 
-```{r echo=FALSE}
+```{r import-step echo=FALSE}
 
 #import raw data
 dat_raw <- read.csv(here("data/CommunityData-raw-2015-v2.csv"))
@@ -42,7 +42,7 @@ dat <- as.matrix(scale(dat, center = TRUE, scale = TRUE))
 
 The `echo: false` option disables the printing of code (only output is displayed).
 
-```{r}
+```{r write-prcomp}
 dat_comps <- prcomp(dat, center = F, scale=F) #set center and scale to FALSE because done pre-PCA
 #get summary
 s <- summary(dat_comps)
@@ -60,13 +60,13 @@ write.csv(dat_comps$x,file=here("results/community_loadings.csv"))
 
 Extract components with eigenvalues \> 1
 
-```{r}
+```{r get-pcs}
 dat_pcs <- dat_comps$x[,1:5]
 ```
 
 Plot loadings
 
-```{r}
+```{r plot-loadings}
 #plot loadings of pc1 and 2
 plot(dat_comps$x[,1],dat_comps$x[,2], 
      xlab=paste("PCA 1 (", round(s$importance[2,1]*100, 1), "%)", sep = ""), 
@@ -111,7 +111,7 @@ text(l.x, l.y, labels=row.names(dat_comps$rotation), col="black", pos=l.pos, cex
 
 Summary of PC Loadings
 
-```{r}
+```{r summary-of-loadings}
 
 print(dat_comps)
 summary(dat_comps)
@@ -131,7 +131,7 @@ Assumptions: - MSAs form clusters characterized by a multivariate distribution
 
 -   Based on Bayesian Information Criterion (BIC)
 
-```{r}
+```{r BIC-calculation}
 #run GMM on 1-20 clusters
 dat_pcs_mc <- Mclust(dat_pcs, G=c(1:20))
 #print summary of model fit
@@ -140,13 +140,13 @@ summary(dat_pcs_mc)
 
 Cluster Assignments
 
-```{r}
+```{r cluster-assignment-plot}
 plot(dat_pcs_mc, what = c("classification"))
 ```
 
 Uncertainty in assignments
 
-```{r}
+```{r uncertainty-calcs}
 write.csv(dat_pcs_mc$uncertainty,file=here("results/community_group_uncertainty.csv"))
 plot(dat_pcs_mc, what = "uncertainty")
 uncerPlot(z = dat_pcs_mc$z)
@@ -154,7 +154,7 @@ uncerPlot(z = dat_pcs_mc$z)
 
 Model Comparisons
 
-```{r}
+```{r model-comparisons}
 #plot BIC scores of different models
 plot(dat_pcs_mc, what='BIC')
 #zoom in on best-fitting models
@@ -203,7 +203,7 @@ write.csv(output$combiz[[output$MclustOutput$G]],file=here("results/cluster_prob
 
 Map Classification Output
 
-```{r}
+```{r classification-maps}
 #extract classifications, e.g., which city belongs to which cluster, export to csv and reload
 
 ### Change this value to pick a different model
@@ -261,7 +261,7 @@ for (g in 1:dat_pcs_mc$G) {
 
 Metrics for clusters
 
-```{r}
+```{r metrics-for-clusters}
 #new data frame
 dat_clust <- as.data.frame(dat)
 #add names
@@ -288,7 +288,7 @@ rownames(cluster_means) <- NULL
 
 Box Plot of Scores
 
-```{r}
+```{r boxplot-figure fig.width=30,fig.height=15}
 #boxplots of scores for clusters
 par(mfrow=c(2,4), mar=c(2.5,5,2.5,3))
 boxplot(subset(dat_clust, x=="1")[2:18], horizontal=T, las=1, ylim=c(-4,4), main="Cluster 1")
@@ -307,7 +307,7 @@ par(mfrow=c(1,1))
 
 Dotplot of clusters
 
-```{r}
+```{r dotplot-figure fig.width=30,fig.height=15}
 #dotplots of cluster mean values
 par(mfrow=c(2,5))
 dotchart(cluster_means$one, labels=cluster_means$variable,xlim=c(-2,2), main='Cluster 1', pch=16)

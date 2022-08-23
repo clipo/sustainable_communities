@@ -3,9 +3,9 @@ title: "MSA Cluster Modeling"
 author: "Robert J. DiNapoli"
 date: "8/16/2022"
 output:
-  pdf_document: default
-  word_document: default
   html_document: default
+  word_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
