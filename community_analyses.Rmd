@@ -13,7 +13,7 @@ First, we read in the raw data. In this case, we start with just the original ra
 ```{r setup}
 library(readr)
 library(here)
-CommunityData <- read_csv(here("data/CommunityData-raw-2015.csv"))
+CommunityData <- read_csv(here("data/CommunityData-raw-2015-v3.csv"))
 #View(CommunityData)
 #set the row names in the table
 rownames(CommunityData)=CommunityData$ME
@@ -72,7 +72,8 @@ Now we have a scree plot showing the number of clusters and the sum of squares. 
 
 ```{r}
 library(mclust)
-d_clust <- Mclust(as.matrix(scaled_data), G=1:15, modelNames = mclust.options("emModelNames"))
+d_clust <- Mclust(as.matrix(scaled_data), G=1:15, modelNames = mclust.options("emModelNames"))1
+
 d_clust$BIC
 plot(d_clust)
 ```
@@ -86,13 +87,13 @@ nb <- NbClust(scaled_data, diss=NULL, distance = "euclidean",
               index = "all", alphaBeale = 0.1)
 hist(nb$Best.nc[1,], breaks = max(na.omit(nb$Best.nc[1,])))
 ```
-Let's make some plots of the clusters. We will pick 9 as the number of clusters to examine based on the analysis above
+Let's make some plots of the clusters. We will pick 11 as the number of clusters to examine based on the analysis above
 
 ```{r}
-res.km <- kmeans(scaled_data,9,nstart=25)
+res.km <- kmeans(scaled_data,11,nstart=25)
 
 library(factoextra)
-
+1
 ## repel is on
 fviz_cluster(res.km, data = scaled_data,
              geom = "text",
@@ -158,7 +159,7 @@ d_clust$BIC
 plot(d_clust)
 ```   
 
-Based on these analysis, the number of clusters is either 7 (VEI, VEE) or 9 (VEI) - they are close to each other.
+Based on these analysis, the number of clusters is either 10 (VEI) or 11 (VVE) - they are close to each other.
 
 NbClust package provides 30 indices for determining the number of clusters and proposes to user the best clustering scheme from the different results obtained by varying all combinations of number of clusters, distance measures, and clustering methods. Let's try that.
 
@@ -172,11 +173,11 @@ hist(nb$Best.nc[1,], breaks = max(na.omit(nb$Best.nc[1,])))
 
 ```
 
-Now some nice plots. Lets use 7 as the right # of clusters
+Now some nice plots. Lets use 11 as the right # of clusters
 ```{r}
 library(cluster)
 library(fpc)
-clus <- kmeans(pc_data, centers=7)
+clus <- kmeans(pc_data, centers=1)
 #clus
 plotcluster(pc_data, clus$cluster)
 

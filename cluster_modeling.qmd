@@ -4,6 +4,14 @@ format: pdf
 editor: visual
 ---
 
+#TODO
+
+-   Update data in CSV to include just the raw values for the columns we use
+
+-   Remove the code that selects a subset of columns
+
+-   Trim the various bits of code that produces figures we don't need or use.
+
 ```{r load-libraries echo=FALSE}
 library(here)
 library(broom)
@@ -22,7 +30,7 @@ library(knitr)
 library(kableExtra)
 ```
 
-You can add options to executable code like this
+Here, we read in the data we want to analyze. At the moment, the file we have includes raw values, so we need to turn them into z-scores to standardize everything. We are using 2015 data. Ideally, we will regenerate these values for 2022 (or at least 2020).
 
 ```{r import-step echo=FALSE}
 
@@ -40,7 +48,7 @@ dat = na.omit(dat)
 dat <- as.matrix(scale(dat, center = TRUE, scale = TRUE))
 ```
 
-The `echo: false` option disables the printing of code (only output is displayed).
+First we want to do some basic work with principle components. We generate the output of the first 17 PCs. Then, we generate the loadings of the PCs for each community in a CSV file for analyses.
 
 ```{r write-prcomp}
 dat_comps <- prcomp(dat, center = F, scale=F) #set center and scale to FALSE because done pre-PCA
@@ -64,7 +72,7 @@ Extract components with eigenvalues \> 1
 dat_pcs <- dat_comps$x[,1:5]
 ```
 
-Plot loadings
+Now lets look at the how the PCs are composed.
 
 ```{r plot-loadings}
 #plot loadings of pc1 and 2
@@ -109,7 +117,7 @@ l.pos <- replace(l.pos, hi, "3")
 text(l.x, l.y, labels=row.names(dat_comps$rotation), col="black", pos=l.pos, cex=1.25)
 ```
 
-Summary of PC Loadings
+Summary of PC loadings
 
 ```{r summary-of-loadings}
 

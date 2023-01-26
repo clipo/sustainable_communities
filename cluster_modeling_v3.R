@@ -5,6 +5,10 @@ library(raster)
 library(rgdal)
 library(sp)
 library(RColorBrewer)
+if (!require("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+
+BiocManager::install("PCAtools")
 library(PCAtools)
 library(sf)
 library(tmap)
@@ -20,13 +24,13 @@ library(classInt)
 ###################################
 
 #import raw data
-dat_raw <- read.csv(here("data/CommunityData-raw-2015.csv"))
+dat_raw <- read.csv(here("data/CommunityData-raw-2015-v2.csv"))
 #select columns of interest, removed co2_hhs
 dat  <- dat_raw[,c(4:12,14:21)]
 #convert to dataframe
 dat <- as.data.frame(unclass(dat))
 #set rownames to city names
-rownames(dat)=dat_raw$ME
+rownames(dat)=dat_raw$GEOID
 #look at data
 summary(dat)
 head(dat)
@@ -138,7 +142,7 @@ data<- read.csv(here('results/cluster_assignment_pca.csv'))
 # MSA shapefile from - https://www2.census.gov/geo/tiger/TIGER2015/CBSA/
 msa_Boundary <-readOGR(here("data/MSA"),"tl_2015_us_cbsa") 
 #merge them
-merged <- merge(msa_Boundary,data,by.x="NAME",by.y="X")
+merged <- merge(msa_Boundary,data,by.x="GEOID",by.y="X")
 #remove any cases MSAs with no cluster assignments
 merged_clean <- merged[!is.na(merged$x),]
 #convert x to factor

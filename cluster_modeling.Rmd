@@ -1,7 +1,7 @@
 ---
-title: "MSA Cluster Modeling"
-author: "Robert J. DiNapoli"
-date: "8/16/2022"
+title: "Sustainable Communities Metrics - MSA Cluster Modeling"
+author: "Robert J. DiNapoli, Carl P. Lipo, Pamela Mischen"
+date: "1/25/2023"
 output:
   html_document: default
   word_document: default
@@ -12,6 +12,10 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(palmerpenguins)
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("PCAtools")
 ```
 
 # Load Packages
@@ -30,13 +34,14 @@ library(rgeos)
 library(spData)
 library(knitr)
 library(kableExtra)
+
 ```
 
 # Import Data
 ```{r, results='hide', message=FALSE}
 
 #import raw data
-dat_raw <- read.csv(here("data/CommunityData-raw-2015-v2.csv"))
+dat_raw <- read.csv(here("data/CommunityData-raw-2015-v3.csv"))
 #select columns of interest, for this run remove asian_equality and female_equality
 dat  <- dat_raw[,c(4:18,20:21)]
 #convert to dataframe
@@ -199,6 +204,7 @@ write.csv(output$combiz[[output$MclustOutput$G]],file=here("results/cluster_prob
 
 # Extract and map cluster classifications
 ```{r}
+library(here)
 #extract classifications, e.g., which city belongs to which cluster, export to csv and reload
 
 ### Change this value to pick a different model
@@ -231,8 +237,9 @@ par(mfrow = c(6, 2))  # Set up a 2 x 2 plotting space
 output_map <- us_map
 library(svMisc)
 pb = txtProgressBar(min = 1, max = dat_pcs_mc$G, initial = 1)
-
-for (g in 1:dat_pcs_mc$G) {
+number_of_clusters_chosen <- 11
+for (g in 1:number_of_clusters_chosen) {
+#for (g in 1:dat_pcs_mc$G) {
  setTxtProgressBar(pb,g)
  subset_dat <-subset(data,x==g)
   merged <- merge(msa_Boundary,subset_dat,by.x="NAME",by.y="X")
