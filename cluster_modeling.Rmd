@@ -205,6 +205,7 @@ write.csv(output$combiz[[output$MclustOutput$G]],file=here("results/cluster_prob
 # Extract and map cluster classifications
 ```{r}
 library(here)
+library(sf)
 #extract classifications, e.g., which city belongs to which cluster, export to csv and reload
 
 ### Change this value to pick a different model
@@ -212,24 +213,38 @@ library(here)
 
 write.csv(m_VEI_11$classification,file=here("results/cluster_assignment_pca.csv"))
 data<- read.csv(here('results/cluster_assignment_pca.csv'))
+certainty_data <-read.csv(here('results/community_group_uncertainty.csv'))
+
+total <- merge(data,certainty_data,by="X")
+
+names(total)[names(total) == "x.x"] <- "cluster"
+names(total)[names(total) == "x.y"] <- "certainty"
 
 #import shapefile
 msa_Boundary <-readOGR(here("data/MSA"),"tl_2015_us_cbsa") 
 #merge them
 merged <- merge(msa_Boundary,data,by.x="NAME",by.y="X")
+merged_w_uncertainity <- merge(msa_Boundary,total,by.x="NAME",by.y="X")
 #remove any cases MSAs with no cluster assignments
 merged_clean <- merged[!is.na(merged$x),]
+merged_w_uncertainity_clean <-merged_w_uncertainity[!is.na(merged_w_uncertainity$cluster),]
 #convert x to factor
 merged_clean$Cluster <- as.factor(merged_clean$x)
+merged_w_uncertainity_clean$Cluster <- as.factor(merged_w_uncertainity_clean$cluster)
 #convert to sf object
 cluster_sf <- st_as_sf(merged_clean)
+cluster_sf_uncertain <- st_as_sf(merged_w_uncertainity_clean)
 #make us map
 us_map <- tm_shape(us_states) + tm_borders()
 #combine them
-cluster_map <- tm_shape(cluster_sf) + tm_fill(col="Cluster", palette="Set1")
+#cluster_map <- tm_shape(cluster_sf_uncertain) + tm_fill(col="Cluster", alpha=cluster_sf_uncertain$certainty, palette="Set1")
+ filename<-"all_clusters.shp"
+  filelocation<-paste("results/",filename)
+  st_write(cluster_sf_uncertain, dsn = here(filelocation), layer = filename, driver = "ESRI Shapefile", append=FALSE, delete_dsn = TRUE)
+cluster_map <- tm_shape(cluster_sf_uncertain) + tm_fill(col="Cluster", palette="Set1")
+
 #plot them
 us_map + cluster_map
-
 
 ## now show the distribution of each of the clusters one at a time
 ## dat_pcs_mc$G is the number of clusters
@@ -242,18 +257,19 @@ for (g in 1:number_of_clusters_chosen) {
 #for (g in 1:dat_pcs_mc$G) {
  setTxtProgressBar(pb,g)
  subset_dat <-subset(data,x==g)
+ subset_dat_new <-subset(total,cluster==g)
   merged <- merge(msa_Boundary,subset_dat,by.x="NAME",by.y="X")
+  merged_new <-merge(msa_Boundary,subset_dat_new, by.x="NAME",by.y="X")
   #remove any cases MSAs with no cluster assignments
-  merged_clean <- merged[!is.na(merged$x),]
+  merged_clean_new <- merged_new[!is.na(merged_new$cluster),]
   #convert x to factor
-  merged_clean$Cluster <- as.factor(merged_clean$x)
+  merged_clean_new$Cluster <- as.factor(merged_clean_new$cluster)
   #convert to sf object
-  cluster_sf <- st_as_sf(merged_clean)
-  #make us map
-  us_map <- tm_shape(us_states) + tm_borders()
-  #combine them
-  new_cluster_map <- tm_shape(cluster_sf)+tm_fill(col="Cluster", palette="Set1")
-
+  cluster_sf <- st_as_sf(merged_clean_new)
+  filename<-paste(g,".shp")
+  filelocation<-paste("results/",filename)
+  st_write(cluster_sf, dsn = here(filelocation), layer = filename, driver = "ESRI Shapefile", append=FALSE, delete_dsn = TRUE)
+  
   #plot them
   print (us_map + new_cluster_map)
   #dev.off()#
